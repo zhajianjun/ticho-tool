@@ -1,0 +1,34 @@
+package ${package.assembler};
+
+import ${package.entity}.${className.entity};
+import ${package.dto}.${className.dto};
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+/**
+ * ${table.comment!} 转换
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+@Mapper
+public interface ${className.assembler} {
+    ${className.assembler} INSTANCE = Mappers.getMapper(${className.assembler}.class);
+
+    /**
+     * ${table.comment!}
+     *
+     * @param dto ${table.comment!}DTO
+     * @return {@link ${className.entity}}
+     */
+    ${className.entity} dtoToEntity(${className.dto} dto);
+
+    /**
+     * ${table.comment!}DTO
+     *
+     * @param entity ${table.comment!}
+     * @return {@link ${className.dto}}
+     */
+    ${className.dto} entityToDto(${className.entity} entity);
+
+}

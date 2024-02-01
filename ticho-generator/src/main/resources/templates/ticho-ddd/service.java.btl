@@ -1,0 +1,54 @@
+package ${package.service};
+
+import core.top.ticho.boot.view.PageResult;
+import ${package.dto}.${className.dto};
+import ${package.query}.${className.query};
+
+
+/**
+ * ${table.comment!} 服务接口
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+public interface ${className.service} {
+   <% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+    /**
+     * 保存${table.comment!}
+     *
+     * @param ${lowEntity}DTO ${table.comment!}DTO 对象
+     */
+    void save(${className.dto} ${lowEntity}DTO);
+
+    /**
+     * 删除${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     */
+    void removeBy${keyNameUF}(Long ${keyNameLF});
+
+    /**
+     * 修改${table.comment!}
+     *
+     * @param ${lowEntity}DTO ${table.comment!}DTO 对象
+     */
+    void updateBy${keyNameUF}(${className.dto} ${lowEntity}DTO);
+
+    /**
+     * 根据${keyNameLF}查询${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return {@link ${className.dto}}
+     */
+    ${className.dto} getBy${keyNameUF}(Long ${keyNameLF});
+
+    /**
+     * 分页查询${table.comment!}列表
+     *
+     * @param query 查询
+     * @return {@link PageResult}<{@link ${className.dto}}>
+     */
+    PageResult<${className.dto}> page(${className.query} query);
+
+}
+

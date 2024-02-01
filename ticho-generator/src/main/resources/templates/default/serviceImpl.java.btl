@@ -1,0 +1,113 @@
+package ${package.serviceImpl};
+
+<% if(enableMybatisPlus){ %>
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import ${package.entity}.${className.entity};
+import ${package.mapper}.${className.mapper};
+import ${package.service}.${className.service};
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(!enableMybatisPlus){ %>
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import ${package.entity}.${className.entity};
+import ${package.mapper}.${className.mapper};
+import ${package.service}.${className.service};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
+<% } %>
+
+/**
+ * ${table.comment!} 服务实现
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+<% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+@Service
+<% if(enableMybatisPlus){ %>
+public class ${className.serviceImpl} extends ServiceImpl<${className.mapper}, ${className.entity}> implements ${className.service} {
+
+    @Override
+    public void save${table.entityName}(${table.entityName} ${lowEntity}) {
+        save(${lowEntity});
+    }
+
+    @Override
+    public boolean remove${table.entityName}By${keyNameUF}(Serializable ${keyNameLF}) {
+        return removeById(${keyNameLF});
+    }
+
+    @Override
+    public void modify${table.entityName}(${table.entityName} ${lowEntity}) {
+        updateById(${lowEntity});
+    }
+
+    @Override
+    public ${table.entityName} get${table.entityName}By${keyNameUF}(Serializable ${keyNameLF}) {
+        return getById(${keyNameLF});
+    }
+
+    @Override
+    public List<${table.entityName}> list(${table.entityName} ${lowEntity}) {
+        return baseMapper.selectByConditions(${lowEntity});
+    }
+
+    @Override
+    public PageInfo<${table.entityName}> page(int pageNum, int pageSize, ${table.entityName} ${lowEntity}){
+        PageHelper.startPage(pageNum, pageSize);
+        List<${table.entityName}> ${lowEntity}s = baseMapper.selectByConditions(${lowEntity});
+        return new PageInfo<>(${lowEntity}s);
+    }
+
+<% }else{ %>
+public class ${className.serviceImpl} implements ${className.service} {
+<% } %>
+<% if(!enableMybatisPlus){ %>
+
+    @Autowired
+    private ${table.entityName}Mapper ${lowEntity}Mapper;
+
+    @Override
+    public void save${table.entityName}(${table.entityName} ${lowEntity}) {
+        ${lowEntity}Mapper.insert(${lowEntity});
+    }
+
+    @Override
+    public boolean remove${table.entityName}By${keyNameUF}(Serializable ${keyNameLF}) {
+        return ${lowEntity}Mapper.deleteBy${keyNameUF}(${keyNameLF}) > 0;
+    }
+
+    @Override
+    public void modify${table.entityName}(${table.entityName} ${lowEntity}) {
+        ${lowEntity}Mapper.update(${lowEntity});
+    }
+
+    @Override
+    public ${table.entityName} get${table.entityName}By${keyNameUF}(Serializable ${keyNameLF}) {
+        return ${lowEntity}Mapper.selectBy${keyNameUF}(${keyNameLF});
+    }
+
+    @Override
+    public List<${table.entityName}> list(${table.entityName} ${lowEntity}) {
+        return ${lowEntity}Mapper.selectByConditions(${lowEntity});
+    }
+
+    @Override
+    public PageInfo<${table.entityName}> page(int pageNum, int pageSize, ${table.entityName} ${lowEntity}){
+        PageHelper.startPage(pageNum, pageSize);
+        List<${table.entityName}> ${lowEntity}s = ${lowEntity}Mapper.selectByConditions(${lowEntity});
+        return new PageInfo<>(${lowEntity}s);
+    }
+
+<% } %>
+}

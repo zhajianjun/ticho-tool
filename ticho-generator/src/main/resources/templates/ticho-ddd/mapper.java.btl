@@ -1,0 +1,91 @@
+package ${package.mapper};
+
+<% if(!enableMybatisPlus){ %>
+import ${package.entity}.${className.entity};
+import ${package.query}.${className.query};
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(enableMybatisPlus){ %>
+import mapper.top.ticho.boot.datasource.RootMapper;
+import ${package.entity}.${className.entity};
+import org.springframework.stereotype.Repository;
+
+<% } %>
+
+/**
+ * ${table.comment!} mapper
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+<% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+@Repository
+<% if(enableMybatisPlus){ %>
+public interface ${className.mapper} extends RootMapper<${table.entityName}> {
+<% }else{ %>
+public interface ${className.mapper} {
+
+    /**
+     * 保存 ${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return int 数量
+     */
+    int insert(${table.entityName} ${lowEntity});
+
+    /**
+     * 批量保存 ${table.comment!}
+     *
+     * @param ${lowEntity}s ${table.comment!} 对象
+     * @return int 数量
+     */
+    int insertBatch(Collection<${table.entityName}> ${lowEntity}s);
+
+    /**
+     * 删除 ${table.comment!}
+     *
+     * @param id 主键
+     * @return int
+     */
+    int deleteById(Serializable id);
+
+    /**
+     * 批量删除 ${table.comment!}
+     *
+     * @param ids 主键
+     * @return int
+     */
+    int deleteBatchIds(@Param("list") Collection<? extends Serializable> ids);
+
+    /**
+     * 更新 ${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!}对象
+     * @return int
+     */
+    int updateById(${table.entityName} ${lowEntity});
+
+    /**
+     * 根据${keyNameLF}查询 ${table.comment!}
+     *
+     * @param ids 主键
+     * @return {@link ${table.entityName}}
+     */
+    ${table.entityName} selectById(Serializable ids);
+
+    /**
+     * 根据条件查询 ${table.comment!} 列表
+     *
+     * @param query 查询条件
+     * @return {@link List}<{@link ${table.entityName}}>
+     */
+    List<${table.entityName}> selectByConditions(${className.query} query);
+<% } %>
+
+}

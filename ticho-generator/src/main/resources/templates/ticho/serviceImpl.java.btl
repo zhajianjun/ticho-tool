@@ -1,0 +1,226 @@
+package ${package.serviceImpl};
+
+<% if(enableMybatisPlus){ %>
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import impl.service.top.ticho.boot.datasource.RootServiceImpl;
+import enums.top.ticho.boot.view.BizErrCode;
+import core.top.ticho.boot.view.PageResult;
+import util.top.ticho.boot.view.Assert;
+import ${package.assembler}.${className.assembler};
+import ${package.dto}.${className.dto};
+import ${package.entity}.${className.entity};
+import ${package.query}.${className.query};
+import ${package.mapper}.${className.mapper};
+import ${package.service}.${className.service};
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Long;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(!enableMybatisPlus){ %>
+import cn.hutool.core.collection.CollUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import enums.top.ticho.boot.view.BizErrCode;
+import core.top.ticho.boot.view.PageResult;
+import util.top.ticho.boot.view.Assert;
+import ${package.assembler}.${className.assembler};
+import ${package.dto}.${className.dto};
+import ${package.entity}.${className.entity};
+import ${package.query}.${className.query};
+import ${package.mapper}.${className.mapper};
+import ${package.service}.${className.service};
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+<% } %>
+
+/**
+ * ${table.comment!} 服务实现
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+<% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+@Slf4j
+@Service
+<% if(enableMybatisPlus){ %>
+public class ${className.serviceImpl} extends RootServiceImpl<${className.mapper}, ${className.entity}> implements ${className.service} {
+
+    @Autowired
+    private ${table.entityName}Mapper ${lowEntity}Mapper;
+
+    @Override
+    public void save${className.entity}(${className.dto} ${lowEntity}DTO) {
+        ${className.entity} ${lowEntity} = ${className.assembler}.INSTANCE.dtoToEntity(${lowEntity}DTO);
+        Assert.isTrue(save(${lowEntity}), BizErrCode.FAIL, "保存失败");
+    }
+
+    @Transactional(rollbackFor = {Exception.class})
+    public void save${className.entity}Batch(Collection<${className.dto}> ${lowEntity}DTOs) {
+        Assert.isNotEmpty(${lowEntity}DTOs, BizErrCode.FAIL, "数据不存在");
+        List<${className.entity}> ${lowEntity}s = ${lowEntity}DTOs
+            .stream()
+            .map(${className.assembler}.INSTANCE::dtoToEntity)
+            .collect(Collectors.toList());
+        Assert.isTrue(saveBatch(${lowEntity}s), BizErrCode.FAIL, "保存失败");
+    }
+
+    @Override
+    public void remove${className.entity}By${keyNameUF}(Long ${keyNameLF}) {
+        Assert.isNotNull(${keyNameLF}, "编号不能为空");
+        Assert.isTrue(removeById(${keyNameLF}), BizErrCode.FAIL, "删除失败");
+    }
+
+    @Override
+    public void remove${className.entity}By${keyNameUF}s(Collection<? extends Long> ${keyNameLF}s) {
+        Assert.isNotEmpty(${keyNameLF}s, "编号不能为空");
+        removeByIds(${keyNameLF}s, 200);
+    }
+
+    @Override
+    public void update${className.entity}By${keyNameUF}(${className.dto} ${lowEntity}DTO) {
+        ${className.entity} ${lowEntity} = ${className.assembler}.INSTANCE.dtoToEntity(${lowEntity}DTO);
+        Assert.isNotNull(${lowEntity}, BizErrCode.FAIL, "数据不能为空");
+        Assert.isTrue(updateById(${lowEntity}), BizErrCode.FAIL, "保存失败");
+    }
+
+    @Override
+    public ${className.dto} get${className.entity}By${keyNameUF}(Long ${keyNameLF}) {
+        Assert.isNotNull(${keyNameLF}, "编号不能为空");
+        ${className.entity} ${lowEntity} = getById(${keyNameLF});
+        return ${className.assembler}.INSTANCE.entityToDto(${lowEntity});
+    }
+
+    @Override
+    public PageResult<${className.dto}> page(${className.query} query) {
+        // @formatter:off
+        query.checkPage();
+        Page<${table.entityName}> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        LambdaQueryWrapper<${table.entityName}> wrapper = Wrappers.lambdaQuery();
+    <% for(field in table.fields){ %>
+        <%
+        var getprefix ='';
+        if(field.propertyType=='boolean'){
+            getprefix='is';
+        }else{
+            getprefix='get';
+        }
+        %>
+        <%if(field.propertyType == "String" ){%>
+        wrapper.eq(StrUtil.isNotBlank(query.${getprefix}${field.propertyUpperName}()), ${table.entityName}::${getprefix}${field.propertyUpperName}, query.${getprefix}${field.propertyUpperName}());
+        <%}else{%>
+        wrapper.eq(Objects.nonNull(query.${getprefix}${field.propertyUpperName}()), ${table.entityName}::${getprefix}${field.propertyUpperName}, query.${getprefix}${field.propertyUpperName}());
+        <% } %>
+    <% } %>
+        list(wrapper);
+        List<${className.dto}> ${lowEntity}DTOs = page.getResult()
+            .stream()
+            .map(${className.assembler}.INSTANCE::entityToDto)
+            .collect(Collectors.toList());
+        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), ${lowEntity}DTOs);
+        // @formatter:on
+    }
+<% } else { %>
+public class ${className.serviceImpl} implements ${className.service} {
+
+    @Autowired
+    private ${table.entityName}Mapper ${lowEntity}Mapper;
+
+    @Override
+    public void save${className.entity}(${className.dto} ${lowEntity}DTO) {
+        ${className.entity} ${lowEntity} = ${className.assembler}.INSTANCE.dtoToEntity(${lowEntity}DTO);
+        Assert.isNotNull(${lowEntity}, BizErrCode.FAIL, "数据不能为空");
+        Assert.isTrue(${lowEntity}Mapper.insert(${lowEntity}) == 1, BizErrCode.FAIL, "保存失败");
+    }
+
+    @Transactional(rollbackFor = {Exception.class})
+    public void save${className.entity}Batch(Collection<${className.dto}> ${lowEntity}DTOs) {
+       this.save${className.entity}Batch(${lowEntity}DTOs, 200);
+    }
+
+    @Transactional(rollbackFor = {Exception.class})
+    public void save${className.entity}Batch(Collection<${className.dto}> ${lowEntity}DTOs, int batchSize) {
+        // @formatter:off
+        Assert.isNotEmpty(${lowEntity}DTOs, BizErrCode.FAIL, "数据不存在");
+        if (batchSize <= 0 || batchSize > 1000) {
+            batchSize = 200;
+        }
+        List<List<${className.dto}>> split = CollUtil.split(${lowEntity}DTOs, batchSize);
+        Integer total = split
+            .stream()
+            .map(x-> x.stream().map(${className.assembler}.INSTANCE::dtoToEntity).collect(Collectors.toList()))
+            .map(${lowEntity}Mapper::insertBatch)
+            .reduce(1, Integer::sum);
+        Assert.isTrue(total == ${lowEntity}DTOs.size(), BizErrCode.FAIL, "保存失败");
+        // @formatter:on
+    }
+
+    @Override
+    public void remove${className.entity}By${keyNameUF}(Long ${keyNameLF}) {
+        Assert.isNotNull(${keyNameLF}, "编号不能为空");
+        Assert.isTrue(${lowEntity}Mapper.deleteById(${keyNameLF}) == 1, BizErrCode.FAIL, "删除失败");
+    }
+
+    @Override
+    public void remove${className.entity}By${keyNameUF}s(Collection<? extends Long> ${keyNameLF}s) {
+        Assert.isNotEmpty(${keyNameLF}s, "编号不能为空");
+        remove${className.entity}By${keyNameUF}s(${keyNameLF}s, 200);
+    }
+
+    public void remove${className.entity}By${keyNameUF}s(Collection<? extends Long> ${keyNameLF}s, int batchSize) {
+        if (batchSize <= 0 || batchSize > 1000) {
+            batchSize = 200;
+        }
+        List<? extends List<? extends Long>> split = CollUtil.split(${keyNameLF}s, batchSize);
+        Integer total = split.stream().map(${lowEntity}Mapper::deleteBatchIds).reduce(1, Integer::sum);
+        boolean removed = total == ${keyNameLF}s.size();
+        Assert.isTrue(removed, BizErrCode.FAIL, "删除失败");
+    }
+
+    @Override
+    public void update${className.entity}By${keyNameUF}(${className.dto} ${lowEntity}DTO) {
+        ${className.entity} ${lowEntity} = ${className.assembler}.INSTANCE.dtoToEntity(${lowEntity}DTO);
+        Assert.isNotNull(${lowEntity}, BizErrCode.FAIL, "数据不能为空");
+        Assert.isTrue(${lowEntity}Mapper.updateById(${lowEntity}) == 1, BizErrCode.FAIL, "保存失败");
+    }
+
+    @Override
+    public ${className.dto} get${className.entity}By${keyNameUF}(Long ${keyNameLF}) {
+        Assert.isNotNull(${keyNameLF}, "编号不能为空");
+        ${className.entity} ${lowEntity} = ${lowEntity}Mapper.selectById(${keyNameLF});
+        return ${className.assembler}.INSTANCE.entityToDto(${lowEntity});
+    }
+
+    @Override
+    public PageResult<${className.dto}> page(${className.query} query) {
+        // @formatter:off
+        query.checkPage();
+        Page<${table.entityName}> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        ${lowEntity}Mapper.selectByConditions(query);
+        List<${className.dto}> ${lowEntity}DTOs = page.getResult()
+            .stream()
+            .map(${className.assembler}.INSTANCE::entityToDto)
+            .collect(Collectors.toList());
+        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), ${lowEntity}DTOs);
+        // @formatter:on
+    }
+<% } %>
+
+}

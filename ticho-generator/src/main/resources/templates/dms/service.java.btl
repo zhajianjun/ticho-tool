@@ -1,0 +1,70 @@
+package ${package.service};
+
+<% if(enableMybatisPlus){ %>
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${package.query}.${className.query};
+import ${package.entity}.${className.entity};
+
+import cn.xrtech.mvc.view.PageResult;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(!enableMybatisPlus){ %>
+import com.github.pagehelper.PageInfo;
+import ${package.entity}.${className.entity};
+
+import java.io.Serializable;
+import java.util.List;
+<% } %>
+
+/**
+ * ${table.comment!} 服务接口
+ *
+ * @author ${author!}
+ * @createTime ${date!}
+ */
+<% if(enableMybatisPlus){ %>
+public interface ${className.service} extends IService<${table.entityName}> {
+<% }else{ %>
+public interface ${className.service} {
+<% } %>
+   <% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+    /**
+     * 保存${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     */
+    void save${table.entityName}(${table.entityName} ${lowEntity});
+
+    /**
+     * 删除${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return boolean 是否删除成功
+     */
+    boolean remove${table.entityName}(String ${keyNameLF});
+
+    /**
+     * 修改${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     */
+    void modify${table.entityName}(${table.entityName} ${lowEntity});
+
+    /**
+     * 根据${keyNameLF}查询${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return ${table.entityName} ${table.comment!}
+     */
+    ${table.entityName} get${table.entityName}(String ${keyNameLF});
+
+    /**
+     * 分页查询${table.comment!}列表
+     *
+     * @param ${lowEntity}Query 条件
+     * @return PageResult<${table.entityName}> ${table.comment!} 列表
+     */
+    PageResult<${table.entityName}> page(${table.entityName}Query ${lowEntity}Query);
+
+}
+

@@ -1,0 +1,106 @@
+package ${package.fo};
+
+import java.io.Serializable;
+    <% for(pkg in table.pkgs){ %>
+        <% if(!@pkg.contains("baomidou")) { %>
+import ${pkg};
+        <% } %>
+    <% } %>
+    <% if(enableLombok){ %>
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+    <% } %>
+    <% if(enableSwagger){ %>
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+    <% } %>
+    <% for(field in table.fields){ %>
+        <% if(field.propertyType == "Date"  || field.propertyType == "LocalDateTime"){ %>
+import com.fasterxml.jackson.annotation.JsonFormat;
+        <%break;%>
+        <%}%>
+    <%}%>
+    <% for(field in table.fields){ %>
+        <% if(field.propertyLowerName=="password"){ %>
+import com.fasterxml.jackson.annotation.JsonProperty;
+        <%break;%>
+        <% } %>
+    <%}%>
+
+/**
+ * ${table.comment!} fo
+ *
+ * @author ${author!}
+ * @createTime ${date!}
+ */
+    <% if(enableLombok){ %>
+@Data
+@EqualsAndHashCode(callSuper = false)
+    <% } %>
+    <% if(enableSwagger){ %>
+@ApiModel(value = "${table.comment!}Fo")
+    <% } %>
+public class ${table.entityName}Fo implements Serializable {
+    private static final long serialVersionUID = 1L;
+<% /** -----------START 字段循环遍历----------- **/ %>
+<% for(field in table.fields){ %>
+
+    <% if(enableSwagger){ %>
+    @ApiModelProperty(value = "${field.comment}", position = ${fieldLP.index*10})
+        <% }else{ %>
+    /**
+     * ${field.comment}
+     */
+    <% } %>
+    <% /**---------------**/ %>
+    <% if(field.propertyType == "Date" || field.propertyType == "LocalDateTime"){ %>
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+        <% if(field.propertyLowerName == "password"){ %>
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        <% }else{ %>
+        <% } %>
+    <% }else if(field.propertyType == "LocalDate"){ %>
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    <% }else{ %>
+    <% } %>
+        <% if(field.propertyLowerName == "password"){ %>
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        <% } %>
+    private ${field.propertyType} ${field.propertyLowerName};
+<% } %>
+<% /** -----------END 字段循环遍历----------- **/ %>
+<% if(!enableLombok){ %>
+    <% for(field in table.fields){ %>
+        <%
+        var getprefix ='';
+        if(field.propertyType=='boolean'){
+            getprefix='is';
+        }else{
+            getprefix='get';
+        }
+        %>
+    public ${field.propertyType} ${getprefix}${field.propertyUpperName}() {
+        return ${field.propertyLowerName};
+    }
+
+    public void set${field.propertyUpperName}(${field.propertyType} ${field.propertyLowerName}) {
+        this.${field.propertyLowerName} = ${field.propertyLowerName};
+    }
+    <% } %>
+<% } %>
+
+<% if(!enableLombok){ %>
+    @Override
+    public String toString() {
+        return "${table.entityName}{" +
+    <% for(field in table.fields){ %>
+       <% if(fieldLP.index==0){ %>
+        "${field.propertyLowerName}=" + ${field.propertyLowerName} +
+       <% }else{ %>
+        ", ${field.propertyLowerName}=" + ${field.propertyLowerName} +
+       <% } %>
+    <% } %>
+        "}";
+    }
+<% } %>
+}

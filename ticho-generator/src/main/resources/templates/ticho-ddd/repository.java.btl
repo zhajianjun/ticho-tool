@@ -1,0 +1,99 @@
+package ${package.repository};
+
+<% if(enableMybatisPlus){ %>
+import service.top.ticho.boot.datasource.RootService;
+import ${package.entity}.${className.entity};
+import ${package.query}.${className.query};
+
+import java.util.List;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(!enableMybatisPlus){ %>
+import ${package.entity}.${className.entity};
+import ${package.query}.${className.query};
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+<% } %>
+
+/**
+ * ${table.comment!} repository接口
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+<% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+<% if(enableMybatisPlus){ %>
+public interface ${className.repository} extends RootService<${table.entityName}> {
+
+    /**
+     * 根据条件查询${table.comment!}列表
+     *
+     * @param query 查询条件
+     * @return {@link List}<{@link ${table.entityName}}>
+     */
+    List<${table.entityName}> list(${className.query} query);
+
+<% }else{ %>
+public interface ${className.repository} {
+
+    /**
+     * 保存${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return boolean 是否保存成功
+     */
+    boolean save(${table.entityName} ${lowEntity});
+
+    /**
+     * 批量保存${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象集合
+     * @return boolean 是否保存成功
+     */
+    boolean saveBatch(Collection<${table.entityName}> ${lowEntity});
+
+    /**
+     * 删除${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return boolean 是否删除成功
+     */
+    boolean removeById(Serializable ${keyNameLF});
+
+    /**
+     * 批量删除${table.comment!}
+     *
+     * @param ${keyNameLF}s 主键
+     * @return boolean 是否删除成功
+     */
+    boolean removeByIds(Collection<? extends Serializable> ${keyNameLF}s);
+
+    /**
+     * 修改${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return boolean 是否修改成功
+     */
+    boolean updateById(${table.entityName} ${lowEntity});
+
+    /**
+     * 根据${keyNameLF}查询${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return {@link ${table.entityName}}
+     */
+    ${table.entityName} getById(Serializable ${keyNameLF});
+
+    /**
+     * 根据条件查询${table.entityName}列表
+     *
+     * @param query 查询条件
+     * @return {@link List}<{@link ${table.entityName}}>
+     */
+    List<${table.entityName}> list(${className.query} query);
+
+<% } %>
+}
+

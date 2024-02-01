@@ -1,0 +1,76 @@
+package ${package.feignService};
+
+import cn.xrtech.mvc.view.PageResult;
+import cn.xrtech.mvc.view.Result;
+import ${package.fo}.${className.fo};
+import ${package.queryFo}.${className.queryFo};
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+/**
+ * ${table.comment!} feign服务接口
+ *
+ * @author ${author!}
+ * @createTime ${date!}
+ */
+@FeignClient(value = "${project}", contextId = "${className.service}")
+<% if(enableMybatisPlus){ %>
+public interface ${className.feignService} {
+<% }else{ %>
+public interface ${className.feignService} {
+<% } %>
+   <% var lowEntity = strutil.toLowerCase(strutil.subStringTo(className.fo,0,1))+strutil.subString(className.fo,1); %>
+    /**
+     * 保存${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return ${table.comment!} 对象
+     */
+    @PostMapping
+    Result<${className.fo}> save${table.entityName}(@RequestBody ${className.fo} ${lowEntity});
+
+    /**
+     * 删除${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return boolean 是否删除成功
+     */
+    @DeleteMapping     
+    Result<Boolean> remove${table.entityName}(@RequestParam("id") String ${keyNameLF});
+
+    /**
+     * 修改${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return ${table.comment!} 对象
+     */
+    @PutMapping
+    Result<${className.fo}> modify${table.entityName}(@RequestBody ${className.fo} ${lowEntity});
+
+    /**
+     * 根据${keyNameLF}查询${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return ${table.entityName} ${table.comment!}
+     */
+    @GetMapping
+    Result<${className.fo}> get${table.entityName}(@RequestParam("id") String ${keyNameLF});
+
+    /**
+     * 分页查询${table.comment!}列表
+     *
+     * @param ${lowEntity}Query 条件
+     * @return PageResult<${table.entityName}> ${table.comment!} 列表
+     */
+    @GetMapping("page")
+    Result<PageResult<${className.fo}>> page(@SpringQueryMap ${className.queryFo} ${lowEntity}Query);
+
+}
+

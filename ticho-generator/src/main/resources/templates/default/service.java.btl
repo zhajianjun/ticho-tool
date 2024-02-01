@@ -1,0 +1,83 @@
+package ${package.service};
+
+<% if(enableMybatisPlus){ %>
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
+import ${package.entity}.${className.entity};
+
+import java.io.Serializable;
+import java.util.List;
+<% } %>
+<% /** --------------------------------- **/ %>
+<% if(!enableMybatisPlus){ %>
+import com.github.pagehelper.PageInfo;
+import ${package.entity}.${className.entity};
+
+import java.io.Serializable;
+import java.util.List;
+<% } %>
+
+/**
+ * ${table.comment!} 服务接口
+ *
+ * @author ${author!}
+ * @date ${date!}
+ */
+<% if(enableMybatisPlus){ %>
+public interface ${className.service} extends IService<${table.entityName}> {
+<% }else{ %>
+public interface ${className.service} {
+<% } %>
+   <% var lowEntity = strutil.toLowerCase(strutil.subStringTo(table.entityName,0,1))+strutil.subString(table.entityName,1); %>
+    /**
+     * 保存${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return ${table.entityName} 保存后的${table.comment!}
+     */
+    void save${table.entityName}(${table.entityName} ${lowEntity});
+
+    /**
+     * 删除${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return boolean 是否删除成功
+     */
+    boolean remove${table.entityName}By${keyNameUF}(Serializable ${keyNameLF});
+
+    /**
+     * 修改${table.comment!}
+     *
+     * @param ${lowEntity} ${table.comment!} 对象
+     * @return ${table.entityName} 修改后的${table.comment!}
+     */
+    void modify${table.entityName}(${table.entityName} ${lowEntity});
+
+    /**
+     * 根据${keyNameLF}查询${table.comment!}
+     *
+     * @param ${keyNameLF} 主键
+     * @return ${table.entityName} ${table.comment!}
+     */
+    ${table.entityName} get${table.entityName}By${keyNameUF}(Serializable ${keyNameLF});
+
+    /**
+     * 根据条件查询${table.comment!}列表
+     *
+     * @param ${lowEntity} 条件
+     * @return List<${table.entityName}> ${table.comment!} 列表
+     */
+    List<${table.entityName}> list(${table.entityName} ${lowEntity});
+
+    /**
+     * 分页查询${table.comment!}列表
+     *
+     * @param pageNum 当前页
+     * @param pageSize 页大小
+     * @param ${lowEntity} 条件
+     * @return PageInfo<${table.entityName}> ${table.comment!} 列表
+     */
+    PageInfo<${table.entityName}> page(int pageNum, int pageSize, ${table.entityName} ${lowEntity});
+
+}
+
