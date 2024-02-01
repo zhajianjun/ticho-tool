@@ -1,13 +1,13 @@
 package top.ticho.trace.okhttp.interceptor;
 
 import cn.hutool.core.util.StrUtil;
-import top.ticho.tool.trace.common.constant.LogConst;
-import top.ticho.tool.trace.core.util.TraceUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.MDC;
+import top.ticho.tool.trace.common.constant.LogConst;
+import top.ticho.tool.trace.core.util.TraceUtil;
 
 import java.io.IOException;
 

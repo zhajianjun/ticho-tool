@@ -1,13 +1,13 @@
 package top.ticho.tool.trace.feign;
 
 import cn.hutool.core.util.StrUtil;
-import top.ticho.tool.trace.common.constant.LogConst;
-import top.ticho.tool.trace.core.util.TraceUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import top.ticho.tool.trace.common.constant.LogConst;
+import top.ticho.tool.trace.core.util.TraceUtil;
 
 /**
  * 链路feign拦截器

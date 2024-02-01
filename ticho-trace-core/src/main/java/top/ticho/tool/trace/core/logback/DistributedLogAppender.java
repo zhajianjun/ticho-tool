@@ -4,10 +4,10 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
-import top.ticho.tool.trace.common.constant.LogConst;
-import top.ticho.tool.trace.core.handle.LogHandleContext;
 import lombok.Setter;
 import org.slf4j.helpers.MessageFormatter;
+import top.ticho.tool.trace.common.constant.LogConst;
+import top.ticho.tool.trace.core.handle.LogHandleContext;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

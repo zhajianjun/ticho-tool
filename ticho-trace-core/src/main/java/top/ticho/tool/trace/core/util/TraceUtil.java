@@ -3,9 +3,9 @@ package top.ticho.tool.trace.core.util;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import org.slf4j.MDC;
 import top.ticho.tool.trace.common.bean.TraceInitInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
-import org.slf4j.MDC;
 
 import java.util.Map;
 import java.util.Optional;
