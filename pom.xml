@@ -16,6 +16,7 @@
         <module>ticho-trace-gateway</module>
         <module>ticho-trace-okhttp</module>
         <module>ticho-generator</module>
+        <module>ticho-intranet</module>
     </modules>
 
     <properties>
@@ -180,6 +181,12 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.33</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.1.90.Final</version>
             </dependency>
 
         </dependencies>

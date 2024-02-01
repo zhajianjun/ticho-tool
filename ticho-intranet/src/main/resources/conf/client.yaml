@@ -1,0 +1,7 @@
+accessKey: 68bfe8f0af124ecfa093350ab8d4b44f
+serverHost: 127.0.0.1
+serverPort: 5120
+sslEnable: false
+sslPath: 
+sslPassword: 
+maxPoolSize: 100

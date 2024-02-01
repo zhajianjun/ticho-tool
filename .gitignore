@@ -33,6 +33,7 @@ target/
 ./.mvn
 /.mvn/wrapper/
 logs/
+/conf
 ./git-flow-plus.config
 
 !**/JasyptUtil.java
