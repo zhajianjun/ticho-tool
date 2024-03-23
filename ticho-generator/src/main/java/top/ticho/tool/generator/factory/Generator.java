@@ -76,6 +76,7 @@ public class Generator {
         summary.setCommonTemplateParams(getCommonTemplateParams(props));
         boolean tableFile = createAllTableFile(args, dataPath, summary, engine);
         if (tableFile) {
+            log.warn("没有找到表信息");
             return;
         }
         engine.startUp(summary);
