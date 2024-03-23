@@ -201,9 +201,9 @@ public class Generator {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         common.put("date", nullGetDefaultValue(props, "common.date", date));
         common.put("enableLombok", Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableLombok", "true")));
-        common.put("enableSwagger", !Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableSwagger", "true")));
-        common.put("enableMybatisCache", !Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableMybatisCache", "true")));
-        common.put("enableMybatisPlus", !Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableMybatisPlus", "true")));
+        common.put("enableSwagger", Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableSwagger", "true")));
+        common.put("enableMybatisCache", Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableMybatisCache", "true")));
+        common.put("enableMybatisPlus", Boolean.parseBoolean(nullGetDefaultValue(props,"common.enableMybatisPlus", "true")));
         return common;
         // @formatter:on
     }
