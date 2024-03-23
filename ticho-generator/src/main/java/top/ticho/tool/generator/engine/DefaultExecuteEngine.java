@@ -56,7 +56,7 @@ public class DefaultExecuteEngine extends AbstractExecuteEngine {
         }
         String pkg = templateConfig.getRelativePkgOrPath();
         // 去除"."和文件前缀的"/"
-        pkg = pkg.replace("\\.", PREFIX);
+        pkg = pkg.replaceAll("\\.", PREFIX);
         if (pkg.startsWith(PREFIX)) {
             pkg = pkg.replaceFirst(PREFIX, "");
         }
