@@ -62,7 +62,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
             .stream()
             .filter(x-> Objects.equals(ctx.channel(), x.getChannel()))
             .findFirst()
-            .ifPresent(serverHandler::closeClenitAndRequestChannel);
+            .ifPresent(serverHandler::closeClientAndRequestChannel);
         log.error("客户端异常 {} {}", ctx.channel(), cause.getMessage());
         super.exceptionCaught(ctx, cause);
     }
@@ -97,7 +97,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
         } else {
             // 关闭客户端通道、请求通道
             ClientInfo clientInfo = serverHandler.getClientByAccessKey(accessKey);
-            serverHandler.closeClenitAndRequestChannel(clientInfo);
+            serverHandler.closeClientAndRequestChannel(clientInfo);
             CommonUtil.close(channel);
         }
         super.channelInactive(ctx);

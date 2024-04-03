@@ -24,15 +24,14 @@ import top.ticho.tool.intranet.util.CommonUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 内网映射服务端处理器
@@ -93,7 +92,16 @@ public class ServerHandler {
         if (null == clientInfo || StrUtil.isBlank((accessKey = clientInfo.getAccessKey()))) {
             return;
         }
-        clientMap.putIfAbsent(accessKey, clientInfo);
+        ClientInfo clientInfoGet = clientMap.get(accessKey);
+        if (Objects.isNull(clientInfoGet)) {
+            clientMap.put(accessKey, clientInfo);
+            clientInfoGet = clientInfo;
+        }
+        Map<Integer, PortInfo> portMap = clientInfoGet.getPortMap();
+        if (MapUtil.isEmpty(portMap)) {
+            return;
+        }
+        portMap.values().forEach(appHandler::createApp);
     }
 
     public void saveClientBatch(List<ClientInfo> clientInfos) {
@@ -112,15 +120,24 @@ public class ServerHandler {
             return;
         }
         Map<Integer, PortInfo> portMap = clientInfoGet.getPortMap();
-        if (MapUtil.isNotEmpty(portMap)) {
-            for (PortInfo port : portMap.values()) {
-                appHandler.deleteApp(port.getPort());
-            }
-            portMap.clear();
-        }
-        closeClenitAndRequestChannel(clientInfoGet);
+        Optional.ofNullable(portMap)
+            .filter(MapUtil::isNotEmpty)
+            .map(Map::keySet)
+            .ifPresent(ports-> {
+                ports.forEach(appHandler::deleteApp);
+                portMap.clear();
+            });
+        closeClientAndRequestChannel(clientInfoGet);
         CommonUtil.close(clientInfoGet.getChannel());
         clientMap.remove(accessKey);
+    }
+
+    public void deleteAllClient() {
+        if (MapUtil.isEmpty(clientMap)) {
+            return;
+        }
+        Set<String> accessKeys = clientMap.keySet();
+        accessKeys.forEach(this::deleteClient);
     }
 
     public void createApp(PortInfo portInfo) {
@@ -153,34 +170,6 @@ public class ServerHandler {
             clientInfo.getPortMap().remove(portNum);
             appHandler.deleteApp(portInfo.getPort());
         }
-    }
-
-    public void initAllApp() {
-        // @formatter:off
-        Collection<ClientInfo> clientInfos = clientMap.values();
-        if (CollUtil.isEmpty(clientInfos)) {
-            return;
-        }
-        Long maxBindPorts = serverProperty.getMaxBindPorts();
-        AtomicLong finalTotal = new AtomicLong(maxBindPorts);
-        clientInfos
-            .stream()
-            .map(ClientInfo::getPortMap)
-            .map(Map::values)
-            .flatMap(Collection::stream)
-            .forEach(portInfo-> {
-                if (finalTotal.get() <= 0L) {
-                    log.info("创建失败，超出最大绑定端口数{}", maxBindPorts);
-                    return;
-                }
-                finalTotal.decrementAndGet();
-                try {
-                    appHandler.createApp(portInfo);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
-            });
-        // @formatter:on
     }
 
     public ClientInfo getClientByAccessKey(String accessKey) {
@@ -240,7 +229,7 @@ public class ServerHandler {
         return null;
     }
 
-    public void closeClenitAndRequestChannel(ClientInfo clientInfo) {
+    public void closeClientAndRequestChannel(ClientInfo clientInfo) {
         if (Objects.isNull(clientInfo)) {
             return;
         }

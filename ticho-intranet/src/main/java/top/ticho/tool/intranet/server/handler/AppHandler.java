@@ -36,6 +36,8 @@ public class AppHandler {
     @Getter
     private final Map<Integer, Channel> bindPortChannelMap = new ConcurrentHashMap<>();
 
+    private final ServerProperty serverProperty;
+
     public AppHandler(ServerProperty serverProperty, ServerHandler serverHandler, NioEventLoopGroup serverBoss, NioEventLoopGroup serverWorker) {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         ServerBootstrap group = serverBootstrap.group(serverBoss, serverWorker);
@@ -43,6 +45,7 @@ public class AppHandler {
         AppListenHandlerInit childHandler = new AppListenHandlerInit(serverProperty, serverHandler, this);
         channel.childHandler(childHandler);
         this.serverBootstrap = serverBootstrap;
+        this.serverProperty = serverProperty;
     }
 
     public boolean exists(Integer portNum) {
@@ -59,6 +62,11 @@ public class AppHandler {
         }
         if (bindPortChannelMap.containsKey(port)) {
             log.warn("创建应用失败，端口：{}已被创建", port);
+            return;
+        }
+        Long maxBindPorts = serverProperty.getMaxBindPorts();
+        if (bindPortChannelMap.size() >= maxBindPorts) {
+            log.warn("创建应用失败，端口：{} 超出最大绑定端口数{}", port, maxBindPorts);
             return;
         }
         try {
