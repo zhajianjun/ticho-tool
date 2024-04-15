@@ -34,7 +34,6 @@ public class ServerStartTest {
         portInfo.setPort(80);
         portInfo.setEndpoint("127.0.0.1:5122");
         serverHandler.saveClient(clientInfo);
-        serverHandler.initAllApp();
     }
 
 }
