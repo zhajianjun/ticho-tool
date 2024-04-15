@@ -24,8 +24,8 @@ import top.ticho.tool.intranet.util.CommonUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -87,30 +87,84 @@ public class ServerHandler {
         log.info("内网映射服务启动成功");
     }
 
+    /**
+     * 保存客户端
+     * 如果有端口信息，则创建应用
+     */
     public void saveClient(ClientInfo clientInfo) {
         String accessKey;
+        // 如果客户端信息为空或者accessKey为空，则不保存
         if (null == clientInfo || StrUtil.isBlank((accessKey = clientInfo.getAccessKey()))) {
             return;
         }
-        ClientInfo clientInfoGet = clientMap.get(accessKey);
-        if (Objects.isNull(clientInfoGet)) {
+        // 需要创建应用的端口MAP
+        Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
+        // 获取内存中的客户端信息
+        ClientInfo clientInfoFromMem = clientMap.get(accessKey);
+        if (Objects.isNull(clientInfoFromMem)) {
+            // 如果不存在客户端信息，则把当前客户端信息保存到内存中，客户端的端口MAP设置为null，创建应用时存入
+            clientInfo.setPortMap(null);
             clientMap.put(accessKey, clientInfo);
-            clientInfoGet = clientInfo;
         }
-        Map<Integer, PortInfo> portMap = clientInfoGet.getPortMap();
         if (MapUtil.isEmpty(portMap)) {
             return;
         }
-        portMap.values().forEach(appHandler::createApp);
+        portMap.values().forEach(this::createApp);
     }
 
-    public void saveClientBatch(List<ClientInfo> clientInfos) {
+    /**
+     * 批量保存客户端
+     * 如果有端口信息，则创建应用
+     */
+    public void saveClientBatch(Collection<ClientInfo> clientInfos) {
         if (CollUtil.isEmpty(clientInfos)) {
             return;
         }
         clientInfos.forEach(this::saveClient);
     }
 
+    /**
+     * 刷新客户端
+     * 如果客户端的端口MAP为空，则删除应用
+     */
+    public void flushClient(ClientInfo clientInfo) {
+        if (Objects.isNull(clientInfo)) {
+            return;
+        }
+        Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
+        saveClient(clientInfo);
+        String accessKey = clientInfo.getAccessKey();
+        // 如果客户端的端口MAP为空，则删除该客户端所有的应用
+        if (CollUtil.isEmpty(portMap)) {
+            deleteApp(accessKey);
+            return;
+        }
+        // 获取内存中的客户端信息
+        ClientInfo clientInfoFromMem = clientMap.get(accessKey);
+        Map<Integer, PortInfo> portMapFromMem = clientInfoFromMem.getPortMap();
+        // 如果客户端的端口MAP不为空，则删除内存中不应存在的端口
+        portMapFromMem.values().forEach(x-> {
+            if (portMap.containsKey(x.getPort())) {
+                return;
+            }
+            deleteApp(accessKey, x.getPort());
+        });
+    }
+
+    /**
+     * 批量刷新客户端
+     */
+    public void flushClientBatch(Collection<ClientInfo> clientInfos) {
+        if (CollUtil.isEmpty(clientInfos)) {
+            deleteAllClient();
+            return;
+        }
+        clientInfos.forEach(this::flushClient);
+    }
+
+    /**
+     * 根据accessKey删除客户端
+     */
     public void deleteClient(String accessKey) {
         if (StrUtil.isBlank(accessKey)) {
             return;
@@ -132,6 +186,9 @@ public class ServerHandler {
         clientMap.remove(accessKey);
     }
 
+    /**
+     * 删除所有客户端
+     */
     public void deleteAllClient() {
         if (MapUtil.isEmpty(clientMap)) {
             return;
@@ -140,23 +197,47 @@ public class ServerHandler {
         accessKeys.forEach(this::deleteClient);
     }
 
+    /**
+     *  创建应用
+     */
     public void createApp(PortInfo portInfo) {
         if (null == portInfo) {
             return;
         }
-        ClientInfo clientInfo = clientMap.get(portInfo.getAccessKey());
-        if (null == clientInfo) {
+        ClientInfo clientInfoFromMem = clientMap.get(portInfo.getAccessKey());
+        if (Objects.isNull(clientInfoFromMem)) {
+            return;
+        }
+        Map<Integer, PortInfo> portMap = clientInfoFromMem.getPortMap();
+        if (null == portMap) {
+            portMap = new LinkedHashMap<>();
+            clientInfoFromMem.setPortMap(portMap);
+        }
+        appHandler.createApp(portInfo);
+        portMap.put(portInfo.getPort(), portInfo);
+    }
+
+    /**
+     * 根据accessKey删除应用
+     */
+    public void deleteApp(String accessKey) {
+        if (StrUtil.isBlank(accessKey)) {
+            return;
+        }
+        ClientInfo clientInfo = clientMap.get(accessKey);
+        if (null == clientInfo || MapUtil.isEmpty(clientInfo.getPortMap())) {
             return;
         }
         Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
-        if (null == portMap) {
-            portMap = new LinkedHashMap<>();
-            clientInfo.setPortMap(portMap);
-        }
-        portMap.put(portInfo.getPort(), portInfo);
-        appHandler.createApp(portInfo);
+        portMap.keySet().forEach(portNum-> {
+            appHandler.deleteApp(portNum);
+            portMap.remove(portNum);
+        });
     }
 
+    /**
+     * 根据accessKey和端口号删除应用
+     */
     public void deleteApp(String accessKey, Integer portNum) {
         if (StrUtil.isBlank(accessKey) || Objects.isNull(portNum)) {
             return;
@@ -167,8 +248,8 @@ public class ServerHandler {
         }
         if (clientInfo.getPortMap().containsKey(portNum)) {
             PortInfo portInfo = clientInfo.getPortMap().get(portNum);
-            clientInfo.getPortMap().remove(portNum);
             appHandler.deleteApp(portInfo.getPort());
+            clientInfo.getPortMap().remove(portNum);
         }
     }
 
