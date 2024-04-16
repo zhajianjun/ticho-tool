@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.collect.DataCollectHandler;
 import top.ticho.tool.intranet.server.entity.PortInfo;
+import top.ticho.tool.intranet.util.CommonUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -88,8 +89,9 @@ public class AppHandler {
         if (channel == null) {
             return;
         }
-        channel.close();
+        CommonUtil.close(channel);
         bindPortChannelMap.remove(port);
+        log.info("删除应用成功，端口：{}", port);
     }
 
     public String getRequestId() {

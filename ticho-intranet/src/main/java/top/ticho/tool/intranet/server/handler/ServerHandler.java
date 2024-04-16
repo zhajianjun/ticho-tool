@@ -103,13 +103,18 @@ public class ServerHandler {
         ClientInfo clientInfoFromMem = clientMap.get(accessKey);
         if (Objects.isNull(clientInfoFromMem)) {
             // 如果不存在客户端信息，则把当前客户端信息保存到内存中，客户端的端口MAP设置为null，创建应用时存入
-            clientInfo.setPortMap(null);
-            clientMap.put(accessKey, clientInfo);
+            clientInfo.setPortMap(new LinkedHashMap<>());
+            clientInfoFromMem = clientInfo;
+            clientMap.put(accessKey, clientInfoFromMem);
         }
         if (MapUtil.isEmpty(portMap)) {
             return;
         }
-        portMap.values().forEach(this::createApp);
+        Map<Integer, PortInfo> portMapFromMem = clientInfoFromMem.getPortMap();
+        portMap.values()
+            .stream()
+            .filter(x-> !portMapFromMem.containsKey(x.getPort()))
+            .forEach(this::createApp);
     }
 
     /**
@@ -209,10 +214,6 @@ public class ServerHandler {
             return;
         }
         Map<Integer, PortInfo> portMap = clientInfoFromMem.getPortMap();
-        if (null == portMap) {
-            portMap = new LinkedHashMap<>();
-            clientInfoFromMem.setPortMap(portMap);
-        }
         appHandler.createApp(portInfo);
         portMap.put(portInfo.getPort(), portInfo);
     }
@@ -229,9 +230,9 @@ public class ServerHandler {
             return;
         }
         Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
-        portMap.keySet().forEach(portNum-> {
+        portMap.keySet().removeIf(portNum-> {
             appHandler.deleteApp(portNum);
-            portMap.remove(portNum);
+            return true;
         });
     }
 
