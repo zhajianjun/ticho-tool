@@ -1,6 +1,7 @@
 package top.ticho.tool.trace.spring.aop;
 
 import cn.hutool.core.date.SystemClock;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.MDC;
@@ -33,6 +34,9 @@ public abstract class AbstractAspect implements Ordered {
 
     public Object trace(ProceedingJoinPoint joinPoint, String preAppName, String preIp) throws Throwable {
         // @formatter:off
+        if (StrUtil.isNotBlank(MDC.get(LogConst.TRACE_ID_KEY))) {
+            return joinPoint.proceed();
+        }
         long start = SystemClock.now();
         try {
             String appName = environment.getProperty("spring.application.name");
