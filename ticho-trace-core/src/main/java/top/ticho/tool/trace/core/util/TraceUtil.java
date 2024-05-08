@@ -128,13 +128,7 @@ public class TraceUtil {
      */
     public static void complete() {
         // 移除MDC里的信息
-        MDC.remove(LogConst.TRACE_KEY);
-        MDC.remove(LogConst.TRACE_ID_KEY);
-        MDC.remove(LogConst.SPAN_ID_KEY);
-        MDC.remove(LogConst.APP_NAME_KEY);
-        MDC.remove(LogConst.IP_KEY);
-        MDC.remove(LogConst.PRE_APP_NAME_KEY);
-        MDC.remove(LogConst.PRE_IP_KEY);
+        MDC.clear();
         NEXT_SPAN_INDEX_TL.remove();
     }
 
