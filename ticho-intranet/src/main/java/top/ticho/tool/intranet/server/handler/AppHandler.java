@@ -11,7 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.tool.intranet.prop.ServerProperty;
-import top.ticho.tool.intranet.server.collect.DataCollectHandler;
+import top.ticho.tool.intranet.server.filter.AppListenFilter;
+import top.ticho.tool.intranet.server.filter.AppListenRootFilter;
+import top.ticho.tool.intranet.server.filter.DefaultAppListenFilter;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.util.CommonUtil;
 
@@ -115,8 +117,20 @@ public class AppHandler {
         private final AppHandler appHandler;
 
         protected void initChannel(SocketChannel socketChannel) {
-            socketChannel.pipeline().addFirst(new DataCollectHandler());
+            socketChannel.pipeline().addFirst(new AppListenRootFilter(getFilter()));
             socketChannel.pipeline().addLast(new AppListenHandler(serverProperty, serverHandler, appHandler));
+        }
+
+        public AppListenFilter getFilter() {
+            Class<? extends AppListenFilter> filter = serverProperty.getFilter();
+            if (Objects.isNull(serverProperty.getFilter())) {
+                return new DefaultAppListenFilter();
+            }
+            try {
+                return filter.newInstance();
+            } catch (Exception ignore) {
+                return new DefaultAppListenFilter();
+            }
         }
 
     }

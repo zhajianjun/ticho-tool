@@ -1,6 +1,7 @@
 package top.ticho.tool.intranet.prop;
 
 import lombok.Data;
+import top.ticho.tool.intranet.server.filter.AppListenFilter;
 
 /**
  * 服务配置
@@ -29,5 +30,7 @@ public class ServerProperty {
     private int bossThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
     /** 处理客户端连接线程数量。默认为当前机器cpu数的两倍 */
     private int workerThreads = Runtime.getRuntime().availableProcessors() * 2;
+    /** 应用监听过滤器 */
+    private Class<? extends AppListenFilter> filter;
 
 }
