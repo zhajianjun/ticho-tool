@@ -25,19 +25,18 @@ public class DefaultAppListenFilter implements AppListenFilter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, ByteBuf msgByteBuf) {
         InetSocketAddress addr = (InetSocketAddress) ctx.channel().localAddress();
         AppDataCollector collector = AppDataCollector.getCollector(addr.getPort());
-        collector.incrementReadBytes(((ByteBuf) msg).readableBytes());
+        collector.incrementReadBytes(msgByteBuf.readableBytes());
         collector.incrementReadMsgs(1L);
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+    public void write(ChannelHandlerContext ctx, ByteBuf msgByteBuf, ChannelPromise promise) {
         InetSocketAddress addr = (InetSocketAddress) ctx.channel().localAddress();
         AppDataCollector collector = AppDataCollector.getCollector(addr.getPort());
-        ByteBuf byteBuf = (ByteBuf) msg;
-        collector.incrementWriteBytes(byteBuf.readableBytes());
+        collector.incrementWriteBytes(msgByteBuf.readableBytes());
         collector.incrementWriteMsgs(1L);
     }
 

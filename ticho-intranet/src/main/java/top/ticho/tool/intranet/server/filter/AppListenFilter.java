@@ -1,5 +1,6 @@
 package top.ticho.tool.intranet.server.filter;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
@@ -13,9 +14,9 @@ public interface AppListenFilter {
 
     void channelActive(ChannelHandlerContext ctx);
 
-    void channelRead(ChannelHandlerContext ctx, Object msg);
+    void channelRead(ChannelHandlerContext ctx, ByteBuf msg);
 
-    void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise);
+    void write(ChannelHandlerContext ctx, ByteBuf msg, ChannelPromise promise);
 
     void channelInactive(ChannelHandlerContext ctx);
 
