@@ -2,7 +2,7 @@ package top.ticho.tool.intranet.server.entity;
 
 import lombok.Data;
 import top.ticho.tool.intranet.constant.CommConst;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -60,8 +60,8 @@ public class AppDataCollector {
         ClientDataSummary data = new ClientDataSummary();
         data.setChannels(this.channels.get());
         data.setPort(this.port);
-        data.setReadBytes(CommonUtil.divide(this.readBytes.get(), CommConst.ONE_KB));
-        data.setWroteBytes(CommonUtil.divide(this.writeBytes.get(), CommConst.ONE_KB));
+        data.setReadBytes(IntranetUtil.divide(this.readBytes.get(), CommConst.ONE_KB));
+        data.setWroteBytes(IntranetUtil.divide(this.writeBytes.get(), CommConst.ONE_KB));
         data.setTimestamp(System.currentTimeMillis());
         data.setReadMsgs(this.readMsgs.get());
         data.setWroteMsgs(this.writeMsgs.get());

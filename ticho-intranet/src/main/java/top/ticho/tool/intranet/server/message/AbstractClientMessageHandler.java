@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.Setter;
 import top.ticho.tool.intranet.entity.Message;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 
 /**
@@ -36,7 +36,7 @@ public abstract class AbstractClientMessageHandler {
      * @param data    传输数据
      */
     protected void notify(Channel channel, byte msgType, Long serial, byte[] data) {
-        if (!CommonUtil.isActive(channel)) {
+        if (!IntranetUtil.isActive(channel)) {
             return;
         }
         Message msg = new Message();

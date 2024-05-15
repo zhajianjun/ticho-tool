@@ -13,14 +13,14 @@ import java.util.Objects;
 
 
 /**
- * 通用工具
+ * 内网穿透通用工具
  *
  * @author zhajianjun
  * @date 2024-02-01 12:30
  */
 @Slf4j
-public class CommonUtil {
-    private CommonUtil() {
+public class IntranetUtil {
+    private IntranetUtil() {
     }
 
     public static void close(Channel channel) {

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.util.Objects;
 
@@ -47,7 +47,7 @@ public class ClientConnectMessageHandler extends AbstractClientMessageHandler {
             return;
         }
         Channel requestChannel = serverHandler.getRequestChannel(clientChannel, requestId);
-        if (!CommonUtil.isActive(requestChannel)) {
+        if (!IntranetUtil.isActive(requestChannel)) {
             return;
         }
         channel.attr(CommConst.URI).set(requestId);

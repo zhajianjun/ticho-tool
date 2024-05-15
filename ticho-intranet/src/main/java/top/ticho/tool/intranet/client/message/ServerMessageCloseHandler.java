@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.nio.charset.StandardCharsets;
 
@@ -23,7 +23,7 @@ public class ServerMessageCloseHandler extends AbstractServerMessageHandler {
     public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel clientChannel = ctx.channel();
         log.warn("客户端{}={}关闭连接, 消息：{}", CommConst.ACCESS_KEY, clientProperty.getAccessKey(), StrUtil.str(msg.getData(), StandardCharsets.UTF_8));
-        CommonUtil.close(clientChannel);
+        IntranetUtil.close(clientChannel);
         clientHander.stop(msg.getType());
     }
 

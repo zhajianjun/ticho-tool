@@ -18,7 +18,7 @@ import top.ticho.tool.intranet.common.MessageEncoder;
 import top.ticho.tool.intranet.common.SslHandler;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.prop.ClientProperty;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -96,7 +96,7 @@ public class ClientHander {
         // 时间翻倍
         this.sleepTime = this.sleepTime * 2;
         // 线程睡眠
-        CommonUtil.sleep(this.sleepTime);
+        IntranetUtil.sleep(this.sleepTime);
     }
 
     /**

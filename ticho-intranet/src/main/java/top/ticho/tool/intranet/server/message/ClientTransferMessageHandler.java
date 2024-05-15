@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 /**
  * 客户端信息传输消息处理器
@@ -21,7 +21,7 @@ public class ClientTransferMessageHandler extends AbstractClientMessageHandler {
     public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel channel = ctx.channel();
         Channel requestChannel = channel.attr(CommConst.CHANNEL).get();
-        if (!CommonUtil.isActive(requestChannel)) {
+        if (!IntranetUtil.isActive(requestChannel)) {
             return;
         }
         ByteBuf data = ctx.alloc().buffer(msg.getData().length);

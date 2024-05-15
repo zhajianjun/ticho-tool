@@ -14,7 +14,7 @@ import top.ticho.tool.intranet.client.message.ServerMessageUnknownHandler;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
 import top.ticho.tool.intranet.prop.ClientProperty;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +82,7 @@ public class ServerListenHandler extends SimpleChannelInboundHandler<Message> {
             clientHander.restart();
         } else {
             Channel requestCHannel = clientChannel.attr(CommConst.CHANNEL).get();
-            CommonUtil.close(requestCHannel);
+            IntranetUtil.close(requestCHannel);
         }
         clientHander.removeReadyServerChannel(clientChannel);
         super.channelInactive(ctx);

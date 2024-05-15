@@ -22,7 +22,7 @@ import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.filter.AppListenFilter;
 import top.ticho.tool.intranet.server.filter.DefaultAppListenFilter;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -193,7 +193,7 @@ public class ServerHandler {
                 portMap.clear();
             });
         closeClientAndRequestChannel(clientInfoGet);
-        CommonUtil.close(clientInfoGet.getChannel());
+        IntranetUtil.close(clientInfoGet.getChannel());
         clientMap.remove(accessKey);
     }
 
@@ -327,10 +327,10 @@ public class ServerHandler {
         }
         Map<String, Channel> requestChannelMap = channel.attr(CommConst.REQUEST_ID_ATTR_MAP).get();
         if (MapUtil.isNotEmpty(requestChannelMap)) {
-            requestChannelMap.values().forEach(CommonUtil::close);
+            requestChannelMap.values().forEach(IntranetUtil::close);
             requestChannelMap.clear();
         }
-        CommonUtil.close(channel);
+        IntranetUtil.close(channel);
         clientInfo.setChannel(null);
     }
 

@@ -9,7 +9,7 @@ import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class ClientAuthMessageHandler extends AbstractClientMessageHandler {
             return;
         }
         Channel clientChannelGet = clientInfo.getChannel();
-        if (CommonUtil.isActive(clientChannelGet)) {
+        if (IntranetUtil.isActive(clientChannelGet)) {
             String errorMsg = StrUtil.format("秘钥={}的客户端已经被其他客户端{}使用", accessKey, clientChannelGet);
             notifyError(clientChannel, errorMsg, message.getSerial());
             return;

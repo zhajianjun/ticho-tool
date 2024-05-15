@@ -17,7 +17,7 @@ import top.ticho.tool.intranet.server.message.ClientDisconnectMessageHandler;
 import top.ticho.tool.intranet.server.message.ClientHeartbeatMessageHandler;
 import top.ticho.tool.intranet.server.message.ClientMessageUnknownHandler;
 import top.ticho.tool.intranet.server.message.ClientTransferMessageHandler;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +88,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
         Channel channel = ctx.channel();
         Channel extraChannel = channel.attr(CommConst.CHANNEL).get();
         String accessKey = channel.attr(CommConst.KEY).get();
-        if (CommonUtil.isActive(extraChannel)) {
+        if (IntranetUtil.isActive(extraChannel)) {
             String requestId = channel.attr(CommConst.URI).get();
             // 移除requestId的map信息
             serverHandler.removeRequestChannel(accessKey, requestId);
@@ -98,7 +98,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
             // 关闭客户端通道、请求通道
             ClientInfo clientInfo = serverHandler.getClientByAccessKey(accessKey);
             serverHandler.closeClientAndRequestChannel(clientInfo);
-            CommonUtil.close(channel);
+            IntranetUtil.close(channel);
         }
         super.channelInactive(ctx);
     }

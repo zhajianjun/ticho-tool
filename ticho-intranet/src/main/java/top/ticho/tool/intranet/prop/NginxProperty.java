@@ -3,7 +3,7 @@ package top.ticho.tool.intranet.prop;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import top.ticho.tool.intranet.constant.CommConst;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.io.File;
 
@@ -28,7 +28,7 @@ public class NginxProperty {
     private String home;
 
     public String getConf() {
-        conf = CommonUtil.convertPath(conf);
+        conf = IntranetUtil.convertPath(conf);
         return conf;
     }
 
@@ -47,7 +47,7 @@ public class NginxProperty {
     }
 
     public String getHome() {
-        home = CommonUtil.convertPath(home);
+        home = IntranetUtil.convertPath(home);
         return home;
     }
 

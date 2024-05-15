@@ -7,7 +7,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.entity.Message;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 /**
  * 客户端断开连接消息处理器
@@ -25,17 +25,17 @@ public class ClientDisconnectMessageHandler extends AbstractClientMessageHandler
         Channel requestChannel;
         if (StrUtil.isEmpty(accessKey)) {
             requestChannel = serverHandler.removeRequestChannel(channel, requestId);
-            if (CommonUtil.isActive(requestChannel)) {
+            if (IntranetUtil.isActive(requestChannel)) {
                 requestChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
             }
             return;
         }
         requestChannel = serverHandler.removeRequestChannel(accessKey, requestId);
-        if (!CommonUtil.isActive(requestChannel)) {
+        if (!IntranetUtil.isActive(requestChannel)) {
             return;
         }
         requestChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        CommonUtil.close(channel.attr(CommConst.CHANNEL).get());
+        IntranetUtil.close(channel.attr(CommConst.CHANNEL).get());
         channel.attr(CommConst.URI).set(null);
         channel.attr(CommConst.KEY).set(null);
         channel.attr(CommConst.CHANNEL).set(null);

@@ -14,7 +14,7 @@ import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.filter.AppListenFilter;
 import top.ticho.tool.intranet.server.filter.AppListenRootFilter;
-import top.ticho.tool.intranet.util.CommonUtil;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -90,7 +90,7 @@ public class AppHandler {
         if (channel == null) {
             return;
         }
-        CommonUtil.close(channel);
+        IntranetUtil.close(channel);
         bindPortChannelMap.remove(port);
         log.info("删除应用成功，端口：{}", port);
     }
