@@ -32,10 +32,20 @@ public class IpUtil {
         // Proxy-Client-IP 这个一般是经过apache http服务器的请求才会有，用apache http做代理时一般会加上Proxy-Client-IP请求头，而WL-Proxy-Client-IP是他的weblogic插件加上的头。
         String unknown = "unknown";
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            // Proxy-Client-IP：apache 服务代理
             ip = request.getHeader("Proxy-Client-IP");
         }
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            // WL-Proxy-Client-IP：weblogic 服务代理
             ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            //HTTP_CLIENT_IP：有些代理服务器
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            //X-Real-IP：nginx服务代理
+            ip = request.getHeader("X-Real-IP");
         }
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
