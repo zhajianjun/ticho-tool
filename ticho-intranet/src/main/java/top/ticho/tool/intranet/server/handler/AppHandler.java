@@ -41,11 +41,11 @@ public class AppHandler {
 
     private final ServerProperty serverProperty;
 
-    public AppHandler(ServerProperty serverProperty, ServerHandler serverHandler, NioEventLoopGroup serverBoss, NioEventLoopGroup serverWorker) {
+    public AppHandler(ServerProperty serverProperty, ServerHandler serverHandler, NioEventLoopGroup serverBoss, NioEventLoopGroup serverWorker, AppListenFilter appListenFilter) {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         ServerBootstrap group = serverBootstrap.group(serverBoss, serverWorker);
         ServerBootstrap channel = group.channel(NioServerSocketChannel.class);
-        AppListenHandlerInit childHandler = new AppListenHandlerInit(serverProperty, serverHandler, this);
+        AppListenHandlerInit childHandler = new AppListenHandlerInit(this, serverProperty, serverHandler, appListenFilter);
         channel.childHandler(childHandler);
         this.serverBootstrap = serverBootstrap;
         this.serverProperty = serverProperty;
@@ -110,27 +110,17 @@ public class AppHandler {
     @AllArgsConstructor
     public static class AppListenHandlerInit extends ChannelInitializer<SocketChannel> {
 
+        private final AppHandler appHandler;
+
         private final ServerProperty serverProperty;
 
         private final ServerHandler serverHandler;
 
-        private final AppHandler appHandler;
+        private final AppListenFilter appListenFilter;
 
         protected void initChannel(SocketChannel socketChannel) {
-            socketChannel.pipeline().addFirst(new AppListenRootFilter(getFilter()));
+            socketChannel.pipeline().addFirst(new AppListenRootFilter(appListenFilter));
             socketChannel.pipeline().addLast(new AppListenHandler(serverProperty, serverHandler, appHandler));
-        }
-
-        public AppListenFilter getFilter() {
-            Class<? extends AppListenFilter> filter = serverProperty.getFilter();
-            if (Objects.isNull(serverProperty.getFilter())) {
-                return new DefaultAppListenFilter();
-            }
-            try {
-                return filter.newInstance();
-            } catch (Exception ignore) {
-                return new DefaultAppListenFilter();
-            }
         }
 
     }

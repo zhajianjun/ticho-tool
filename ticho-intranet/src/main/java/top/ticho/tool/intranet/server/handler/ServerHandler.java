@@ -20,6 +20,8 @@ import top.ticho.tool.intranet.constant.CommConst;
 import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
+import top.ticho.tool.intranet.server.filter.AppListenFilter;
+import top.ticho.tool.intranet.server.filter.DefaultAppListenFilter;
 import top.ticho.tool.intranet.util.CommonUtil;
 
 import javax.net.ssl.SSLContext;
@@ -62,12 +64,16 @@ public class ServerHandler {
     private final NioEventLoopGroup serverWorker;
 
     public ServerHandler(ServerProperty serverProperty) {
+        this(serverProperty, new DefaultAppListenFilter());
+    }
+
+    public ServerHandler(ServerProperty serverProperty, AppListenFilter appListenFilter) {
         try {
             log.info("内网映射服务启动中，端口：{}，是否开启ssl：{}, ssl端口：{}", serverProperty.getPort(), serverProperty.getSslEnable(), serverProperty.getSslPort());
             this.serverBoss = new NioEventLoopGroup(serverProperty.getBossThreads());
             this.serverWorker = new NioEventLoopGroup(serverProperty.getWorkerThreads());
             this.serverProperty = serverProperty;
-            this.appHandler = new AppHandler(serverProperty, this, serverBoss, serverWorker);
+            this.appHandler = new AppHandler(serverProperty, this, serverBoss, serverWorker, appListenFilter);
             int servPort = serverProperty.getPort();
             String host = CommConst.LOCALHOST;
             // 创建netty服务端
