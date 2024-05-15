@@ -78,7 +78,7 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) {
         Channel requestChannel = ctx.channel();
-        log.debug("[服务端]通道数据请求, 请求通道{}", requestChannel);
+        // log.debug("[服务端]通道数据请求, 请求通道{}", requestChannel);
         Channel clientChannel = requestChannel.attr(CommConst.CHANNEL).get();
         if (!CommonUtil.isActive(clientChannel)) {
             requestChannel.close();
