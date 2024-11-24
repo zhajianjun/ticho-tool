@@ -110,7 +110,6 @@ public class ${className.serviceImpl} extends RootServiceImpl<${className.mapper
 
     @Override
     public PageResult<${className.dto}> page(${className.query} query) {
-        // @formatter:off
         query.checkPage();
         Page<${table.entityName}> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         LambdaQueryWrapper<${table.entityName}> wrapper = Wrappers.lambdaQuery();
@@ -135,8 +134,7 @@ public class ${className.serviceImpl} extends RootServiceImpl<${className.mapper
             .map(${className.assembler}.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), ${lowEntity}DTOs);
-        // @formatter:on
-    }
+     }
 <% } else { %>
 public class ${className.serviceImpl} implements ${className.service} {
 
@@ -157,7 +155,6 @@ public class ${className.serviceImpl} implements ${className.service} {
 
     @Transactional(rollbackFor = {Exception.class})
     public void save${className.entity}Batch(Collection<${className.dto}> ${lowEntity}DTOs, int batchSize) {
-        // @formatter:off
         Assert.isNotEmpty(${lowEntity}DTOs, BizErrCode.FAIL, "数据不存在");
         if (batchSize <= 0 || batchSize > 1000) {
             batchSize = 200;
@@ -169,8 +166,7 @@ public class ${className.serviceImpl} implements ${className.service} {
             .map(${lowEntity}Mapper::insertBatch)
             .reduce(1, Integer::sum);
         Assert.isTrue(total == ${lowEntity}DTOs.size(), BizErrCode.FAIL, "保存失败");
-        // @formatter:on
-    }
+     }
 
     @Override
     public void remove${className.entity}By${keyNameUF}(Long ${keyNameLF}) {
@@ -210,7 +206,6 @@ public class ${className.serviceImpl} implements ${className.service} {
 
     @Override
     public PageResult<${className.dto}> page(${className.query} query) {
-        // @formatter:off
         query.checkPage();
         Page<${table.entityName}> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         ${lowEntity}Mapper.selectByConditions(query);
@@ -219,8 +214,7 @@ public class ${className.serviceImpl} implements ${className.service} {
             .map(${className.assembler}.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), ${lowEntity}DTOs);
-        // @formatter:on
-    }
+     }
 <% } %>
 
 }

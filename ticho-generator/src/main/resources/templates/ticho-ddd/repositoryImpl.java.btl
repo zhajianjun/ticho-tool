@@ -46,7 +46,6 @@ public class ${className.repositoryImpl} extends RootServiceImpl<${className.map
 
     @Override
     public List<${table.entityName}> list(${className.query} query) {
-        // @formatter:off
         LambdaQueryWrapper<${table.entityName}> wrapper = Wrappers.lambdaQuery();
     <% for(field in table.fields){ %>
         <%
@@ -64,8 +63,7 @@ public class ${className.repositoryImpl} extends RootServiceImpl<${className.map
         <% } %>
     <% } %>
         return list(wrapper);
-        // @formatter:on
-    }
+     }
 
 }
 <% } else { %>

@@ -57,7 +57,6 @@ public class ${className.serviceImpl} implements ${className.service} {
 
     @Override
     public PageResult<${className.dto}> page(${className.query} query) {
-        // @formatter:off
         query.checkPage();
         Page<${table.entityName}> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         ${lowEntity}Repository.list(query);
@@ -66,6 +65,5 @@ public class ${className.serviceImpl} implements ${className.service} {
             .map(${className.assembler}.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), ${lowEntity}DTOs);
-        // @formatter:on
-    }
+     }
 }

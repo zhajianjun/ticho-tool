@@ -2,7 +2,7 @@ package ${package.query};
 
 import java.io.Serializable;
 import core.top.ticho.boot.view.BasePageQuery;
-    <% for(pkg in table.pkgs){ %>
+    <% for(pkg in table.imports){ %>
         <% if(!@pkg.contains("baomidou")) { %>
 import ${pkg};
         <% } %>

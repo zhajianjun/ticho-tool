@@ -1,7 +1,7 @@
 package ${package.dto};
 
 import java.io.Serializable;
-    <% for(pkg in table.pkgs){ %>
+    <% for(pkg in table.imports){ %>
         <% if(!@pkg.contains("baomidou")) { %>
 import ${pkg};
         <% } %>

@@ -6,18 +6,19 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- *
  * @author zhajianjun
  * @date 2024-02-01 12:30
  */
 public class TypeConvertRegistry {
-    private final Map<DbType, TypeConvert> type_convert_enum_map = new EnumMap<>(DbType.class);
+
+    private final Map<DbType, TypeConverter> type_convert_enum_map = new EnumMap<>(DbType.class);
 
     public TypeConvertRegistry() {
-        this.type_convert_enum_map.put(DbType.MYSQL, new MySqlTypeConvert());
+        this.type_convert_enum_map.put(DbType.MYSQL, new MySqlTypeConverter());
     }
 
-    public TypeConvert getTypeConvert(DbType dbType) {
+    public TypeConverter getTypeConvert(DbType dbType) {
         return this.type_convert_enum_map.get(dbType);
     }
+
 }

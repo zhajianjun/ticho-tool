@@ -40,4 +40,5 @@ public interface KeyWordsHandler {
     default String formatColumn(String columnName) {
         return String.format(formatStyle(), columnName);
     }
+
 }

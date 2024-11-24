@@ -11,6 +11,7 @@
     <artifactId>ticho-generator</artifactId>
 
     <dependencies>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -27,11 +28,6 @@
             <artifactId>beetl</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
         <!-- logback -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -41,25 +37,10 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
         </dependency>
-        <!-- logback -->
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
+            <groupId>top.ticho.tool</groupId>
+            <artifactId>ticho-json</artifactId>
         </dependency>
 
     </dependencies>
@@ -123,7 +104,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>top.ticho.tool.generator.factory.Generator</mainClass>
+                            <mainClass>top.ticho.tool.generator.Application</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>.</Class-Path>
@@ -154,7 +135,6 @@
                                         <include>*.bat</include>
                                         <include>*.sh</include>
                                         <include>*.yml</include>
-                                        <include>*.properties</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -168,11 +148,11 @@
                         </goals>
                         <configuration>
                             <!--copyTo的目录-->
-                            <outputDirectory>${project.build.directory}/generator/templates/test</outputDirectory>
+                            <outputDirectory>${project.build.directory}/generator/templates</outputDirectory>
                             <resources>
                                 <!--被copy的目录-->
                                 <resource>
-                                    <directory>src/main/resources/templates/default</directory>
+                                    <directory>src/main/resources/templates</directory>
                                     <include>**</include>
                                 </resource>
                             </resources>

@@ -9,20 +9,18 @@ import org.beetl.core.exception.ErrorInfo;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.StringJoiner;
 
 /**
  * 模版引擎错误处理
  * <p>
- *     模版引擎的错误默认是输出异常信息，并不会抛异常中断过程，
- *     所以默认实现ErrorHandler接口实现抛出异常。此类是要注入GroupTemplate中去。
- *     @see GroupTemplate#setErrorHandler(org.beetl.core.ErrorHandler)
- * </p>
+ * 模版引擎的错误默认是输出异常信息，并不会抛异常中断过程，
+ * 所以默认实现ErrorHandler接口实现抛出异常。此类是要注入GroupTemplate中去。
  *
  * @author zhajianjun
  * @date 2024-02-01 12:30
+ * @see GroupTemplate#setErrorHandler(org.beetl.core.ErrorHandler)
+ * </p>
  */
 @Slf4j
 public class BeetlErrorHandler implements ErrorHandler {
@@ -32,37 +30,36 @@ public class BeetlErrorHandler implements ErrorHandler {
         ErrorInfo error = new ErrorInfo(ex);
         StringJoiner errMsgJoiner = new StringJoiner("");
         if (error.getErrorCode().equals(BeetlException.CLIENT_IO_ERROR_ERROR)) {
-            //不输出详细提示信息
+            // 不输出详细提示信息
             if (!gt.getConf().isIgnoreClientIOError()) {
                 errMsgJoiner.add("客户端IO异常:" + getResourceName(ex.resource.getId()) + ":" + error.getMsg());
-                throw new GeException(errMsgJoiner.toString());
+                throw new GenerateException(errMsgJoiner.toString());
             }
 
         }
 
         int line = error.getErrorTokenLine();
 
-        errMsgJoiner.add(">>").add(this.getDateTime()).add(":").add(error.getType()).add(":")
-                .add(error.getErrorTokenText()).add(" 位于").add(line != 0 ? line + "行" : "").add(" 资源:")
-                .add(String.valueOf(getResourceName(ex.resource.getId()))).add("\n");
-
+        errMsgJoiner.add(">>");
+        errMsgJoiner.add(":");
+        errMsgJoiner.add(error.getType());
+        errMsgJoiner.add(":");
+        errMsgJoiner.add(error.getErrorTokenText() + "位于:" + (line != 0 ? line + "行" : "")  + "\n");
+        // errMsgJoiner.add(String.valueOf(getResourceName(ex.resource.getId()))).add("\n");
         if (error.getErrorCode().equals(BeetlException.TEMPLATE_LOAD_ERROR)) {
             if (error.getMsg() != null) {
                 errMsgJoiner.add(error.getMsg()).add("\n");
             }
             errMsgJoiner.add(gt.getResourceLoader().getInfo());
-            throw new GeException(errMsgJoiner.toString());
+            throw new GenerateException(errMsgJoiner.toString());
         }
-
         if (ex.getMessage() != null) {
             errMsgJoiner.add(ex.getMessage()).add("\n");
         }
-
         String content;
         try {
-
             Resource<?> res = ex.resource;
-            //显示前后三行的内容
+            // 显示前后三行的内容
             int[] range = this.getRange(line);
             content = res.getContent(range[0], range[1]);
             if (content != null) {
@@ -78,7 +75,7 @@ public class BeetlErrorHandler implements ErrorHandler {
             }
         } catch (IOException e) {
 
-            //ingore
+            // ingore
 
         }
 
@@ -87,11 +84,11 @@ public class BeetlErrorHandler implements ErrorHandler {
             errMsgJoiner.add("  调用栈:").add("\n");
             for (int i = 0; i < error.getResourceCallStack().size(); i++) {
                 errMsgJoiner
-                        .add("  " + error.getResourceCallStack().get(i) + " 行：" + error.getTokenCallStack().get(i).line)
-                        .add("\n");
+                    .add("  " + error.getResourceCallStack().get(i) + " 行：" + error.getTokenCallStack().get(i).line)
+                    .add("\n");
             }
         }
-        throw new GeException(errMsgJoiner.toString());
+        throw new GenerateException(errMsgJoiner.toString());
     }
 
     protected Object getResourceName(Object resourceId) {
@@ -109,11 +106,5 @@ public class BeetlErrorHandler implements ErrorHandler {
 
         endLine = startLine + 6;
         return new int[]{startLine, endLine};
-    }
-
-    protected String getDateTime() {
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        return sdf.format(date);
     }
 }

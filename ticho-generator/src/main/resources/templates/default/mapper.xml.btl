@@ -47,7 +47,7 @@
     <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${keyName}">
         insert into ${table.name} (${table.fieldNames}) values
         <foreach collection="list" item="item" separator=",">
-            (${@function.top.ticho.generator.Beetl.convert(table)})
+            (${tableUtil.getFields(table)})
         </foreach>
     </insert>
 
@@ -92,7 +92,7 @@
     <insert id="insertOrUpdateBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${keyName}">
         insert into ${table.name} (${table.fieldNames}) values
         <foreach collection="list" item="item" separator=",">
-            (${@function.top.ticho.generator.Beetl.convert(table)})
+            (${tableUtil.getFields(table)})
         </foreach>
         ON DUPLICATE KEY UPDATE
         <% for(field in table.fields){ %>
@@ -141,7 +141,7 @@
     <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${keyName}">
         insert into ${table.name} (${table.fieldNames}) values
         <foreach collection="list" item="item" separator=",">
-            (${@function.top.ticho.generator.Beetl.convert(table)})
+            (${tableUtil.getFields(table)})
         </foreach>
     </insert>
 
@@ -186,7 +186,7 @@
     <insert id="insertOrUpdateBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${keyName}">
         insert into ${table.name} (${table.fieldNames}) values
         <foreach collection="list" item="item" separator=",">
-            (${@function.top.ticho.generator.Beetl.convert(table)})
+            (${tableUtil.getFields(table)})
         </foreach>
         ON DUPLICATE KEY UPDATE
         <% for(field in table.fields){ %>

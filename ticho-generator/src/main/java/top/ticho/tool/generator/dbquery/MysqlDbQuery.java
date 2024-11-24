@@ -1,7 +1,6 @@
 package top.ticho.tool.generator.dbquery;
 
 /**
- *
  * @author zhajianjun
  * @date 2024-02-01 12:30
  */

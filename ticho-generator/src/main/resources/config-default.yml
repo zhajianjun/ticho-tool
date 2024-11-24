@@ -1,0 +1,48 @@
+projectConfig:
+  # 执行完是否打开文件
+  open: true
+  # 输出路径 注意：windows文件路径复制时斜杠要么"/"或者是"\\",直接复制过来是"\",这样是有问题的，请主动改成"/"或者是"\\"
+  outPutDir: D:\cache\temp
+  # 是否覆盖文件
+  fileOverride: true
+  # 根包位置
+  parentPackage: top.ticho.test
+  # tables: table_name1,table_name2
+  tables: sys_dict
+  # 表前缀去除。可批量，逗号隔开
+  tablePrefixs: sys
+  # 主键名称，如id,如果实际表中有主键id，这个属性会被替代
+  keyName: id
+  # 模板
+  templatePath: ticho
+  # 时间类型  ONLY_DATE - java.util.Date || SQL_PACK - java.sql.Date、java.sql.Time、java.sql.Timestamp || TIME_PACK - java.time.LocalDate、java.time.LocalTime
+  dateType: TIME_PACK
+  customParams:
+    enableMybatisPlus: false
+
+# 数据源配置 dataConfig 目前仅支持myql
+dataSourceConfig:
+  url: jdbc:mysql://127.0.0.1:3306/user?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+  driverName: com.mysql.cj.jdbc.Driver
+  username: root
+  password: 123456
+
+fileTemplateConfig:
+  entity.java.btl:
+    relativePath: entity
+    suffix:
+  mapper.java.btl:
+    relativePath: mapper
+    suffix: Mapper
+  mapper.xml.btl:
+    relativePath: resources/mapper/
+    suffix: Mapper
+  service.java.btl:
+    relativePath: service
+    suffix: Service
+  serviceImpl.java.btl:
+    relativePath: service.impl
+    suffix: ServiceImpl
+  controller.java.btl:
+    relativePath: controller
+    suffix: Controller

@@ -38,3 +38,7 @@ logs/
 
 !**/JasyptUtil.java
 **/application-remote.yaml
+.fastRequest
+/ticho-generator/data/
+/ticho-generator/config*.yml
+/ticho-generator/templates/

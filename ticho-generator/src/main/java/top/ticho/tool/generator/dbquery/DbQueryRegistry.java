@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- *
  * @author zhajianjun
  * @date 2024-02-01 12:30
  */
@@ -21,4 +20,5 @@ public class DbQueryRegistry {
     public DbQuery getDbQuery(DbType dbType) {
         return this.db_query_enum_map.get(dbType);
     }
+
 }
