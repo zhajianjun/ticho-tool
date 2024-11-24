@@ -21,6 +21,7 @@ import top.ticho.tool.generator.enums.JavaType;
 import top.ticho.tool.generator.exception.GenerateException;
 import top.ticho.tool.generator.keywords.KeyWordsHandler;
 import top.ticho.tool.generator.keywords.KeyWordsRegistrey;
+import top.ticho.tool.generator.keywords.MySqlKeyWordsHandler;
 import top.ticho.tool.generator.util.AssertUtil;
 import top.ticho.tool.generator.util.BeetlUtil;
 import top.ticho.tool.generator.util.FileUtil;
@@ -87,8 +88,7 @@ public class ProjectHandler {
         AssertUtil.isTrue(Objects.nonNull(dataSourceConfig), "数据源配置[dataSourceConfig]不能为空");
         AssertUtil.isTrue(Objects.nonNull(projectConfig), "项目配置[projectConfig]不能为空");
         AssertUtil.isTrue(ObjUtil.isNotEmpty(fileTemplateConfigMap), "模板配置[fileTemplateConfigs]不能为空");
-        DbType dbType = DbType.getDbType(dataSourceConfig.getDriverName());
-        AssertUtil.isTrue(Objects.nonNull(dbType), () -> String.format("该数据库暂不支持[%s]", dataSourceConfig.getDriverName()));
+        DbType dbType = Optional.ofNullable(DbType.getDbType(dataSourceConfig.getDriverName())).orElse(DbType.MYSQL);
         this.globalConfig = globalConfig;
         this.dataSourceConfig = dataSourceConfig;
         this.projectConfig = projectConfig;
@@ -123,7 +123,7 @@ public class ProjectHandler {
 
     private KeyWordsHandler getKeyWordsHandler(DbType dbType) {
         KeyWordsRegistrey keyWordsRegistrey = new KeyWordsRegistrey();
-        return keyWordsRegistrey.getKeyWordsHandler(dbType);
+        return Optional.ofNullable(keyWordsRegistrey.getKeyWordsHandler(dbType)).orElseGet(MySqlKeyWordsHandler::new);
     }
 
     private TypeConverter getTypeConverter(DbType dbType) {
