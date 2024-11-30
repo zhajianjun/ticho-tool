@@ -31,10 +31,9 @@
     <!--    %thread 线程名-->
     <!--    %m或者%msg 日志信息-->
     <!--    %n 换行-->
-    <property name="CONSOLE_LOG_PATTERN"
-              value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) %cyan(%-5level) %boldMagenta(%thread) %blue(%logger:%line) %cyan(%X{trace}): %cyan(%msg%n)"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) %cyan(%-5level) %boldMagenta(%thread) %blue(%logger) %cyan(%X{trace}): %cyan(%msg%n)"/>
     <!--文件日志格式-->
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %logger:%line %X{trace}: %msg%n"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %logger %X{trace}: %msg%n"/>
     <!--编码-->
     <property name="ENCODING" value="UTF-8"/>
 
