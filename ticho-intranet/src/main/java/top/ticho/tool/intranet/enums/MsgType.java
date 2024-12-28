@@ -50,20 +50,12 @@ public enum MsgType {
 
 
     static {
-        // @formatter:off
         map = Arrays.stream(values()).collect(Collectors.toMap(MsgType::code, Function.identity()));
-        // @formatter:on
     }
 
     public static MsgType getMsgType(Number number) {
         Byte i = number.byteValue();
         return map.get(i);
-    }
-
-    public static void main(String[] args) {
-        for (MsgType value : values()) {
-            System.out.println(StrUtil.format("/** {} */\npublic static final byte {} = MsgType.{}.getCode();", value.msg(), value.name(), value.name()));
-        }
     }
 
 }

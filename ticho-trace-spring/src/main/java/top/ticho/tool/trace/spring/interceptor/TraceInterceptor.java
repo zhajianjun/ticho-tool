@@ -49,8 +49,6 @@ public class TraceInterceptor implements HandlerInterceptor, Ordered {
         this.environment = environment;
     }
 
-    // @formatter:off
-
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (!(handler instanceof HandlerMethod)) {
@@ -74,7 +72,6 @@ public class TraceInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) {
-        // @formatter:off
         if (!(handler instanceof HandlerMethod)) {
             return;
         }
@@ -109,7 +106,6 @@ public class TraceInterceptor implements HandlerInterceptor, Ordered {
         applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
         TraceUtil.complete();
         startLocal.remove();
-        // @formatter:on
     }
 
 

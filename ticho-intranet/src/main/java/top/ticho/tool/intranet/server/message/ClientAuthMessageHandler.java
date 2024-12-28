@@ -29,7 +29,6 @@ public class ClientAuthMessageHandler extends AbstractClientMessageHandler {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Message message) {
-        // @formatter:off
         Channel clientChannel = ctx.channel();
         String accessKey = message.getUri();
         ClientInfo clientInfo = serverHandler.getClientByAccessKey(accessKey);
@@ -59,7 +58,6 @@ public class ClientAuthMessageHandler extends AbstractClientMessageHandler {
         clientChannel.attr(CommConst.REQUEST_ID_ATTR_MAP).set(new LinkedHashMap<>());
         clientInfo.setConnectTime(LocalDateTime.now());
         clientInfo.setChannel(clientChannel);
-        // @formatter:on
     }
 
     private void notifyError(Channel channel, String errorMsg, long serial) {

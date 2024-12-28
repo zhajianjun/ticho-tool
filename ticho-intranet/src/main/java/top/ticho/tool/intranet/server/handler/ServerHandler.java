@@ -119,7 +119,7 @@ public class ServerHandler {
         Map<Integer, PortInfo> portMapFromMem = clientInfoFromMem.getPortMap();
         portMap.values()
             .stream()
-            .filter(x-> !portMapFromMem.containsKey(x.getPort()))
+            .filter(x -> !portMapFromMem.containsKey(x.getPort()))
             .forEach(this::createApp);
     }
 
@@ -154,7 +154,7 @@ public class ServerHandler {
         ClientInfo clientInfoFromMem = clientMap.get(accessKey);
         Map<Integer, PortInfo> portMapFromMem = clientInfoFromMem.getPortMap();
         // 如果客户端的端口MAP不为空，则删除内存中不应存在的端口
-        portMapFromMem.values().forEach(x-> {
+        portMapFromMem.values().forEach(x -> {
             if (portMap.containsKey(x.getPort())) {
                 return;
             }
@@ -188,7 +188,7 @@ public class ServerHandler {
         Optional.ofNullable(portMap)
             .filter(MapUtil::isNotEmpty)
             .map(Map::keySet)
-            .ifPresent(ports-> {
+            .ifPresent(ports -> {
                 ports.forEach(appHandler::deleteApp);
                 portMap.clear();
             });
@@ -209,7 +209,7 @@ public class ServerHandler {
     }
 
     /**
-     *  创建应用
+     * 创建应用
      */
     public void createApp(PortInfo portInfo) {
         if (null == portInfo) {
@@ -236,7 +236,7 @@ public class ServerHandler {
             return;
         }
         Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
-        portMap.keySet().removeIf(portNum-> {
+        portMap.keySet().removeIf(portNum -> {
             appHandler.deleteApp(portNum);
             return true;
         });
@@ -268,23 +268,19 @@ public class ServerHandler {
     }
 
     public ClientInfo getClientByPort(Integer port) {
-        // @formatter:off
         return clientMap.values()
             .stream()
             .filter(Objects::nonNull)
-            .filter(x-> x.getPortMap().containsKey(port))
+            .filter(x -> x.getPortMap().containsKey(port))
             .findFirst()
             .orElse(null);
-        // @formatter:off
     }
 
     public Channel getClientChannelByPort(Integer port) {
-        // @formatter:off
         return Optional
             .ofNullable(getClientByPort(port))
             .map(ClientInfo::getChannel)
             .orElse(null);
-        // @formatter:on
     }
 
     public Channel getRequestChannel(Channel channel, String requestId) {

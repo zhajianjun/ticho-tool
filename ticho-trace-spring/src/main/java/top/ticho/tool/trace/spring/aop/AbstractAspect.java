@@ -33,7 +33,6 @@ public abstract class AbstractAspect implements Ordered {
     private TraceProperty traceProperty;
 
     public Object trace(ProceedingJoinPoint joinPoint, String preAppName, String preIp) throws Throwable {
-        // @formatter:off
         if (StrUtil.isNotBlank(MDC.get(LogConst.TRACE_ID_KEY))) {
             return joinPoint.proceed();
         }
@@ -69,7 +68,6 @@ public abstract class AbstractAspect implements Ordered {
             applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
             TraceUtil.complete();
         }
-        // @formatter:on
     }
 
 

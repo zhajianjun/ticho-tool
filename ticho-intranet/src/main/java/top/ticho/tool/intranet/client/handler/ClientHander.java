@@ -136,19 +136,17 @@ public class ClientHander {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) {
-            // @formatter:off
-        if (Boolean.TRUE.equals(clientProperty.getSslEnable())) {
-            SslHandler sslHandler = new SslHandler(clientProperty.getSslPath(), clientProperty.getSslPassword());
-            SSLContext sslContext = sslHandler.getSslContext();
-            SSLEngine engine = sslContext.createSSLEngine();
-            engine.setUseClientMode(true);
-            socketChannel.pipeline().addLast(new io.netty.handler.ssl.SslHandler(engine));
-        }
-        socketChannel.pipeline().addLast(new MessageDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
-        socketChannel.pipeline().addLast(new MessageEncoder());
-        socketChannel.pipeline().addLast(new IdleChecker(CommConst.READ_IDLE_TIME, CommConst.WRITE_IDLE_TIME - 10, 0));
-        socketChannel.pipeline().addLast(new ServerListenHandler(clientHander, appHandler, clientProperty));
-        // @formatter:on
+            if (Boolean.TRUE.equals(clientProperty.getSslEnable())) {
+                SslHandler sslHandler = new SslHandler(clientProperty.getSslPath(), clientProperty.getSslPassword());
+                SSLContext sslContext = sslHandler.getSslContext();
+                SSLEngine engine = sslContext.createSSLEngine();
+                engine.setUseClientMode(true);
+                socketChannel.pipeline().addLast(new io.netty.handler.ssl.SslHandler(engine));
+            }
+            socketChannel.pipeline().addLast(new MessageDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
+            socketChannel.pipeline().addLast(new MessageEncoder());
+            socketChannel.pipeline().addLast(new IdleChecker(CommConst.READ_IDLE_TIME, CommConst.WRITE_IDLE_TIME - 10, 0));
+            socketChannel.pipeline().addLast(new ServerListenHandler(clientHander, appHandler, clientProperty));
         }
 
     }

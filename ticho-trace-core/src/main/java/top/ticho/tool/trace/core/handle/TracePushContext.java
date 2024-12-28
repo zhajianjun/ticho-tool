@@ -31,7 +31,6 @@ public class TracePushContext {
     private static final ThreadPoolExecutor executor;
 
     static {
-        // @formatter:off
         float blockingCoefficient = 0.8F;
         int poolSize = (int) (Runtime.getRuntime().availableProcessors() / (1 - blockingCoefficient));
         ThreadFactory threadFactory = ThreadUtil.newNamedThreadFactory(LogConst.THREAD_NAME_PREFIX_TRACE, false);
@@ -41,7 +40,6 @@ public class TracePushContext {
             .setKeepAliveTime(0L)
             .setThreadFactory(threadFactory)
             .build();
-        // @formatter:on
     }
 
     /**

@@ -63,11 +63,9 @@ public class TraceGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        // @formatter:off
         HttpLogInfo httpLogInfo = new HttpLogInfo();
         return chain.filter(preHandle(exchange, httpLogInfo))
             .doFinally(signalType -> complete(httpLogInfo));
-        // @formatter:on
     }
 
     public ServerWebExchange preHandle(ServerWebExchange exchange, HttpLogInfo httpLogInfo) {
@@ -107,7 +105,6 @@ public class TraceGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private void complete(HttpLogInfo httpLogInfo) {
-        // @formatter:off
         TraceInfo traceInfo = TraceInfo.builder()
             .traceId(MDC.get(LogConst.TRACE_ID_KEY))
             .spanId(MDC.get(LogConst.SPAN_ID_KEY))
@@ -126,7 +123,6 @@ public class TraceGlobalFilter implements GlobalFilter, Ordered {
             .build();
         TraceUtil.complete();
         TracePushContext.asyncPushTrace(traceProperty, traceInfo);
-        // @formatter:on
     }
 
     public ServerHttpResponse getResponse(ServerWebExchange exchange, HttpLogInfo httpLogInfo) {
@@ -167,18 +163,17 @@ public class TraceGlobalFilter implements GlobalFilter, Ordered {
     }
 
     public static String preIp(ServerHttpRequest request) {
-        // @formatter:off
         HttpHeaders httpHeaders = request.getHeaders();
         String ip = httpHeaders.getFirst("x-forwarded-for");
         // Proxy-Client-IP 这个一般是经过apache http服务器的请求才会有，用apache http做代理时一般会加上Proxy-Client-IP请求头，而WL-Proxy-Client-IP是他的weblogic插件加上的头。
         String unknown = "unknown";
-        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
             ip = httpHeaders.getFirst("Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
             ip = httpHeaders.getFirst("WL-Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
             ip = Optional.ofNullable(request.getRemoteAddress())
                 .map(InetSocketAddress::getAddress)
                 .map(InetAddress::getHostAddress)
@@ -196,7 +191,6 @@ public class TraceGlobalFilter implements GlobalFilter, Ordered {
         }
         // 获取本机真正的ip地址
         return localIp();
-        // @formatter:on
     }
 
     public static String localIp() {

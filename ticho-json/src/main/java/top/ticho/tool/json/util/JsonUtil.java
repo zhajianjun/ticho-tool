@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import top.ticho.tool.json.constant.DateFormatConst;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -56,8 +58,18 @@ public class JsonUtil {
         setConfig(MAPPER_PROPERTY);
     }
 
+    /**
+     * 注册模块（谨慎使用）
+     *
+     * @param module 模块
+     */
+    public static void registerModule(Module module) {
+        MAPPER.registerModule(module);
+        MAPPER_YAML.registerModule(module);
+        MAPPER_PROPERTY.registerModule(module);
+    }
+
     public static void setConfig(ObjectMapper objectMapper) {
-        // @formatter:off
         // 反序列化 默认遇到未知属性去时会抛一个JsonMappingException,所以关闭
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -77,17 +89,17 @@ public class JsonUtil {
         // 忽略无法转换的对象
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         // Jackson 将接受单个值作为数组。
-        objectMapper.enable(DeserializationFeature. ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        objectMapper.setDateFormat(new SimpleDateFormat(DateFormatConst.YYYY_MM_DD_HH_MM_SS));
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD_HH_MM_SS)));
-        javaTimeModule.addSerializer(LocalDate.class,new LocalDateSerializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
-        javaTimeModule.addSerializer(LocalTime.class,new LocalTimeSerializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
-        javaTimeModule.addDeserializer(LocalDateTime.class,new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD_HH_MM_SS)));
-        javaTimeModule.addDeserializer(LocalDate.class,new LocalDateDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
-        javaTimeModule.addDeserializer(LocalTime.class,new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD_HH_MM_SS)));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
         objectMapper.registerModule(javaTimeModule).registerModule(new ParameterNamesModule());
-        // @formatter:on
     }
 
     /**

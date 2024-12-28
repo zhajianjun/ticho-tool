@@ -20,7 +20,6 @@ public class OkHttpUtil {
     private static final OkHttpClient httpClient = new OkHttpClient.Builder().build();
 
     public static void push(String url, String secret, Object data) {
-        // @formatter:off
         String json = JsonUtil.toJsonString(data);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
         Request request = new Request.Builder()
@@ -32,7 +31,6 @@ public class OkHttpUtil {
         } catch (IOException e) {
             System.err.printf("[%s] okhttp Failed to push data to %s error:%s%n", Thread.currentThread().getName(), url, e.getMessage());
         }
-        // @formatter:on
     }
 
 
