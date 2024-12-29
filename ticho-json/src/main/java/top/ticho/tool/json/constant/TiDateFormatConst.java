@@ -6,7 +6,7 @@ package top.ticho.tool.json.constant;
  * @author zhajianjun
  * @date 2024-11-16 13:31:16
  */
-public class DateFormatConst {
+public class TiDateFormatConst {
 
     /** HH:mm:ss */
     public static final String HH_MM_SS = "HH:mm:ss";

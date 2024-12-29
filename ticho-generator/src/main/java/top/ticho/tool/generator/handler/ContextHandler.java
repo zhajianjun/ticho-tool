@@ -11,8 +11,8 @@ import top.ticho.tool.generator.util.StrUtil;
 import top.ticho.tool.generator.util.TraceUtil;
 import top.ticho.tool.generator.yml.GlobalYml;
 import top.ticho.tool.generator.yml.ProjectYml;
-import top.ticho.tool.json.constant.DateFormatConst;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.tool.json.constant.TiDateFormatConst;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -65,7 +65,7 @@ public class ContextHandler {
         if (StrUtil.isNotBlank(globalConfig.getDate())) {
             return;
         }
-        String dateFormat = Optional.ofNullable(globalConfig.getDateFormat()).orElse(DateFormatConst.YYYY_MM_DD_HH_MM_SS);
+        String dateFormat = Optional.ofNullable(globalConfig.getDateFormat()).orElse(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS);
         globalConfig.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(dateFormat)));
     }
 
@@ -98,7 +98,7 @@ public class ContextHandler {
             return null;
         }
         // 获取项目配置
-        ProjectYml projectYml = JsonUtil.toJavaObjectFromYaml(projectConfigFile, new TypeReference<ProjectYml>() {});
+        ProjectYml projectYml = TiJsonUtil.toJavaObjectFromYaml(projectConfigFile, new TypeReference<ProjectYml>() {});
         log.warn("项目配置加载成功，配置根路径[{}]", projectConfigFilePath);
         if (Objects.isNull(projectYml)) {
             return null;
@@ -113,7 +113,7 @@ public class ContextHandler {
             return null;
         }
         // 获取全局配置
-        return JsonUtil.toJavaObjectFromYaml(globalConfigFile, new TypeReference<GlobalYml>() {});
+        return TiJsonUtil.toJavaObjectFromYaml(globalConfigFile, new TypeReference<GlobalYml>() {});
     }
 
 }

@@ -27,7 +27,7 @@ import top.ticho.tool.generator.util.BeetlUtil;
 import top.ticho.tool.generator.util.FileUtil;
 import top.ticho.tool.generator.util.ObjUtil;
 import top.ticho.tool.generator.util.StrUtil;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -399,7 +399,7 @@ public class ProjectHandler {
         File file = new File(paramJsonPath);
         FileUtil.checkFile(file);
         try (FileOutputStream out = new FileOutputStream(file)) {
-            String json = JsonUtil.toJsonStringPretty(templateParams);
+            String json = TiJsonUtil.toJsonStringPretty(templateParams);
             out.write(json.getBytes());
             log.debug("参数文件生成成功[{}]", file.getAbsolutePath());
         } catch (Exception e) {

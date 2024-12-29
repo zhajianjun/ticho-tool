@@ -21,7 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.ticho.tool.json.constant.DateFormatConst;
+import top.ticho.tool.json.constant.TiDateFormatConst;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -42,14 +42,14 @@ import java.util.Optional;
  * @author zhajianjun
  * @date 2024-11-16 13:31:16
  */
-public class JsonUtil {
-    private static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
+public class TiJsonUtil {
+    private static final Logger log = LoggerFactory.getLogger(TiJsonUtil.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final ObjectMapper MAPPER_YAML = new ObjectMapper(new YAMLFactory());
     private static final ObjectMapper MAPPER_PROPERTY = new ObjectMapper(new JavaPropsFactory());
     private static final String EMPTY = "";
 
-    private JsonUtil() {
+    private TiJsonUtil() {
     }
 
     static {
@@ -91,14 +91,14 @@ public class JsonUtil {
         // Jackson 将接受单个值作为数组。
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-        objectMapper.setDateFormat(new SimpleDateFormat(DateFormatConst.YYYY_MM_DD_HH_MM_SS));
+        objectMapper.setDateFormat(new SimpleDateFormat(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS));
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD_HH_MM_SS)));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD_HH_MM_SS)));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.YYYY_MM_DD)));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DateFormatConst.HH_MM_SS)));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS)));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD)));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(TiDateFormatConst.HH_MM_SS)));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS)));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD)));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(TiDateFormatConst.HH_MM_SS)));
         objectMapper.registerModule(javaTimeModule).registerModule(new ParameterNamesModule());
     }
 
@@ -115,7 +115,7 @@ public class JsonUtil {
             }
             return Objects.nonNull(obj) ? MAPPER.writeValueAsString(obj) : EMPTY;
         } catch (Exception e) {
-            log.error("toJsonString error, param={}, catch error {}", obj, e.getMessage(), e);
+            log.error("Object toJsonString error, param={}, catch error {}", obj, e.getMessage(), e);
             return EMPTY;
         }
     }
@@ -133,7 +133,7 @@ public class JsonUtil {
             }
             return Objects.nonNull(obj) ? MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj) : EMPTY;
         } catch (Exception e) {
-            log.error("toJsonString error, param={}, catch error {}", obj, e.getMessage(), e);
+            log.error("Object toJsonString error, param={}, catch error {}", obj, e.getMessage(), e);
             return EMPTY;
         }
     }
@@ -152,7 +152,7 @@ public class JsonUtil {
         try {
             return isEmpty(jsonString) ? null : MAPPER.readValue(jsonString, clazz);
         } catch (Exception e) {
-            log.error("obj toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
+            log.error("Object toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
             return null;
         }
     }
@@ -169,7 +169,7 @@ public class JsonUtil {
         try {
             return isEmpty(jsonString) ? null : MAPPER.readValue(jsonString, clazz);
         } catch (Exception e) {
-            log.error("str toJavaObject error, param={}, catch error {}", jsonString, e.getMessage(), e);
+            log.error("JsonString toJavaObject error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return null;
         }
     }
@@ -177,16 +177,16 @@ public class JsonUtil {
     /**
      * json格式的String 转换成对象
      *
-     * @param jsonStr       jsonStr
+     * @param jsonString    jsonStr
      * @param typeReference 泛型类
      * @return T
      */
-    public static <T> T toJavaObject(String jsonStr, TypeReference<T> typeReference) {
+    public static <T> T toJavaObject(String jsonString, TypeReference<T> typeReference) {
         checkNotNull(typeReference);
         try {
-            return isEmpty(jsonStr) ? null : MAPPER.readValue(jsonStr, typeReference);
+            return isEmpty(jsonString) ? null : MAPPER.readValue(jsonString, typeReference);
         } catch (Exception e) {
-            log.error("str toJavaObject error, param={}, catch error {}", jsonStr, e.getMessage(), e);
+            log.error("JsonString toJavaObject error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return null;
         }
     }
@@ -204,7 +204,7 @@ public class JsonUtil {
         try {
             return isEmpty(jsonStr) ? null : MAPPER.readValue(jsonStr, typeReference);
         } catch (Exception e) {
-            log.error("obj toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
+            log.error("Object toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
             return null;
         }
     }
@@ -222,7 +222,7 @@ public class JsonUtil {
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(parametrized, parameterClasses);
             return isEmpty(jsonString) ? null : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("obj toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
+            log.error("Object toJavaObject error, param={}, catch error {}", obj, e.getMessage(), e);
             return null;
         }
     }
@@ -237,7 +237,7 @@ public class JsonUtil {
         try {
             return isEmpty(jsonString) ? null : MAPPER.readValue(jsonString, new TypeReference<T>() {});
         } catch (Exception e) {
-            log.error("str toJavaObject error, param={}, catch error {}", jsonString, e.getMessage(), e);
+            log.error("JsonString toJavaObject error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return null;
         }
     }
@@ -255,15 +255,15 @@ public class JsonUtil {
     /**
      * json格式的String 转换成集合
      *
-     * @param jsonStr String
+     * @param jsonString String
      * @return T
      */
-    public static List<Object> toList(String jsonStr) {
+    public static List<Object> toList(String jsonString) {
         try {
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(List.class, Object.class);
-            return isEmpty(jsonStr) ? Collections.emptyList() : MAPPER.readValue(jsonStr, javaType);
+            return isEmpty(jsonString) ? Collections.emptyList() : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("toList error, param={}, catch error {}", jsonStr, e.getMessage(), e);
+            log.error("JsonString toList error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -271,18 +271,18 @@ public class JsonUtil {
     /**
      * json格式的String 转换成集合,带泛型
      *
-     * @param jsonStr String
-     * @param clazz   集合的泛型对象类
+     * @param jsonString String
+     * @param clazz      集合的泛型对象类
      * @return List<T>
      */
-    public static <T> List<T> toList(String jsonStr, Class<T> clazz) {
+    public static <T> List<T> toList(String jsonString, Class<T> clazz) {
         clazz = Optional.ofNullable(clazz).orElseThrow(NullPointerException::new);
         try {
 
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(List.class, clazz);
-            return isEmpty(jsonStr) ? Collections.emptyList() : MAPPER.readValue(jsonStr, javaType);
+            return isEmpty(jsonString) ? Collections.emptyList() : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("toList error, param={}, catch error {}", jsonStr, e.getMessage(), e);
+            log.error("JsonString toList error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -290,15 +290,15 @@ public class JsonUtil {
     /**
      * json格式的String 转换成集合
      *
-     * @param jsonStr Object
+     * @param jsonString Object
      * @return Map<Object, Object>
      */
-    public static Map<Object, Object> toMap(String jsonStr) {
+    public static Map<Object, Object> toMap(String jsonString) {
         try {
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(Map.class, Object.class, Object.class);
-            return isEmpty(jsonStr) ? new LinkedHashMap<>() : MAPPER.readValue(jsonStr, javaType);
+            return isEmpty(jsonString) ? new LinkedHashMap<>() : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("toMap error, param={}, catch error {}", jsonStr, e.getMessage(), e);
+            log.error("JsonString toMap error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return new LinkedHashMap<>();
         }
     }
@@ -306,19 +306,19 @@ public class JsonUtil {
     /**
      * json格式的String 转换成集合,带泛型
      *
-     * @param jsonStr Object
-     * @param kClass  Map K 的泛型对象类
-     * @param vClass  Map V 的泛型对象类
+     * @param jsonString Object
+     * @param kClass     Map K 的泛型对象类
+     * @param vClass     Map V 的泛型对象类
      * @return Map<K, V>
      */
-    public static <K, V> Map<K, V> toMap(String jsonStr, Class<K> kClass, Class<V> vClass) {
+    public static <K, V> Map<K, V> toMap(String jsonString, Class<K> kClass, Class<V> vClass) {
         kClass = Optional.ofNullable(kClass).orElseThrow(NullPointerException::new);
         vClass = Optional.ofNullable(vClass).orElseThrow(NullPointerException::new);
         try {
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(Map.class, kClass, vClass);
-            return isEmpty(jsonStr) ? new LinkedHashMap<>() : MAPPER.readValue(jsonStr, javaType);
+            return isEmpty(jsonString) ? new LinkedHashMap<>() : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("toMap error, param={}, catch error {}", jsonStr, e.getMessage(), e);
+            log.error("JsonString toMap error, param={}, catch error {}", jsonString, e.getMessage(), e);
             return new LinkedHashMap<>();
         }
     }
@@ -339,7 +339,7 @@ public class JsonUtil {
             JavaType javaType = MAPPER.getTypeFactory().constructParametricType(Map.class, String.class, Object.class);
             return isEmpty(jsonString) ? new LinkedHashMap<>() : MAPPER.readValue(jsonString, javaType);
         } catch (Exception e) {
-            log.error("toMap exception {}", obj, e);
+            log.error("Object toMap exception {}", obj, e);
             return new LinkedHashMap<>();
         }
     }
@@ -354,7 +354,7 @@ public class JsonUtil {
         try {
             return MAPPER.valueToTree(obj);
         } catch (Exception e) {
-            log.error("toJsonNode exception {}", obj, e);
+            log.error("Object toJsonNode exception {}", obj, e);
             return null;
         }
     }
@@ -390,7 +390,7 @@ public class JsonUtil {
             }
             return MAPPER_YAML.readValue(file, clazz);
         } catch (Exception e) {
-            log.error("toJavaObjectFromYaml exception {}", file, e);
+            log.error("File toJavaObjectFromYaml exception {}", file, e);
             return null;
         }
     }
@@ -402,7 +402,7 @@ public class JsonUtil {
             }
             return MAPPER_YAML.readValue(file, typeReference);
         } catch (Exception e) {
-            log.error("toJavaObjectFromYaml exception {}", file, e);
+            log.error("File toJavaObjectFromYaml exception {}", file, e);
             return null;
         }
     }
@@ -414,7 +414,7 @@ public class JsonUtil {
             }
             return MAPPER_PROPERTY.readValue(file, clazz);
         } catch (Exception e) {
-            log.error("toJavaObjectFromProperty exception {}", file, e);
+            log.error("File toJavaObjectFromProperty exception {}", file, e);
             return null;
         }
     }
@@ -426,7 +426,7 @@ public class JsonUtil {
             }
             return MAPPER_PROPERTY.readValue(file, typeReference);
         } catch (Exception e) {
-            log.error("toJavaObjectFromProperty exception {}", file, e);
+            log.error("File toJavaObjectFromProperty exception {}", file, e);
             return null;
         }
     }
