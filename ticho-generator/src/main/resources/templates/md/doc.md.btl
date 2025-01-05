@@ -1,0 +1,8 @@
+
+# ${table.comment!}
+
+| 列名 | 数据类型 | 注释 | 非空 | 默认 |
+| --- | --- | --- | --- | --- |
+<% for(field in table.fields){ %>
+| ${field.simpleName} | ${field.type} | ${field.comment} | ${field.nullableValue} | ${field.defaultValue} |
+<%}%>
