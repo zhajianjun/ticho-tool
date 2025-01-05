@@ -80,12 +80,14 @@ public class LogEventListen implements EventHandler<LogInfo> {
      * 开启定时任务
      */
     public void start() {
-        executorService.scheduleWithFixedDelay(() -> {
-            if (!taskExecute.get()) {
-                return;
-            }
-            execute();
-        }, 500, flushInterval, TimeUnit.MILLISECONDS);
+        executorService.scheduleWithFixedDelay(
+            () -> {
+                if (!taskExecute.get()) {
+                    return;
+                }
+                execute();
+            }, 500, flushInterval, TimeUnit.MILLISECONDS
+        );
     }
 
     /**

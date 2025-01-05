@@ -24,10 +24,10 @@ public class NginxConst {
     public static final String NGINX_RELOAD = " -p %s -s reload";
 
     public static final String DEFAULT_NGINX_CONFIG =
-            "\n" + "#user  nobody;\n" + "worker_processes  1;\n" + "\n" + "#error_log  logs/error.log;\n" + "#error_log  logs/error.log  notice;\n" + "#error_log  logs/error.log  info;\n" + "\n"
-                    + "#pid        logs/nginx.pid;\n" + "\n" + "\n" + "events {\n" + "    worker_connections  1024;\n" + "}\n" + "\n" + "\n" + "http {\n" + "    include       mime.types;\n"
-                    + "    default_type  application/octet-stream;\n" + "\n" + "\n" + "    #access_log  logs/access.log  main;\n" + "\n" + "    sendfile        on;\n" + "    #tcp_nopush     on;\n"
-                    + "\n" + "    keepalive_timeout  65;\n" + "\n" + "    include conf.d/*.conf;\n" + "    server_names_hash_bucket_size 256;\n" + "}\n";
+        "\n" + "#user  nobody;\n" + "worker_processes  1;\n" + "\n" + "#error_log  logs/error.log;\n" + "#error_log  logs/error.log  notice;\n" + "#error_log  logs/error.log  info;\n" + "\n"
+            + "#pid        logs/nginx.pid;\n" + "\n" + "\n" + "events {\n" + "    worker_connections  1024;\n" + "}\n" + "\n" + "\n" + "http {\n" + "    include       mime.types;\n"
+            + "    default_type  application/octet-stream;\n" + "\n" + "\n" + "    #access_log  logs/access.log  main;\n" + "\n" + "    sendfile        on;\n" + "    #tcp_nopush     on;\n"
+            + "\n" + "    keepalive_timeout  65;\n" + "\n" + "    include conf.d/*.conf;\n" + "    server_names_hash_bucket_size 256;\n" + "}\n";
 
     /** 主站nginx https模板编码 */
     public static final String MAIN_NGINX_HTTPS_CONFIG_TEMPLATE = "MAIN_HTTPS";

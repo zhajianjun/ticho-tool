@@ -44,7 +44,7 @@ public class BeetlErrorHandler implements ErrorHandler {
         errMsgJoiner.add(":");
         errMsgJoiner.add(error.getType());
         errMsgJoiner.add(":");
-        errMsgJoiner.add(error.getErrorTokenText() + "位于:" + (line != 0 ? line + "行" : "")  + "\n");
+        errMsgJoiner.add(error.getErrorTokenText() + "位于:" + (line != 0 ? line + "行" : "") + "\n");
         // errMsgJoiner.add(String.valueOf(getResourceName(ex.resource.getId()))).add("\n");
         if (error.getErrorCode().equals(BeetlException.TEMPLATE_LOAD_ERROR)) {
             if (error.getMsg() != null) {

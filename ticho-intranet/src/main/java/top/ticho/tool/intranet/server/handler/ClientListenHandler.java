@@ -60,7 +60,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
         serverHandler.getClientMap()
             .values()
             .stream()
-            .filter(x-> Objects.equals(ctx.channel(), x.getChannel()))
+            .filter(x -> Objects.equals(ctx.channel(), x.getChannel()))
             .findFirst()
             .ifPresent(serverHandler::closeClientAndRequestChannel);
         log.error("客户端异常 {} {}", ctx.channel(), cause.getMessage());

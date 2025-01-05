@@ -15,6 +15,7 @@ import java.util.Map;
 public class CommConst {
     private CommConst() {
     }
+
     /** 消息头部固定长度 */
     public static final byte HEADER_SIZE = 4;
 

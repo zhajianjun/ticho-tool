@@ -1,7 +1,5 @@
 package top.ticho.tool.intranet.enums;
 
-import cn.hutool.core.util.StrUtil;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;

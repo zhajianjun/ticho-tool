@@ -4,7 +4,7 @@ projectConfig:
   # 是否文件追加模式
   fileAppend: false
   # 输出路径 注意：windows文件路径复制时斜杠要么"/"或者是"\\",直接复制过来是"\",这样是有问题的，请主动改成"/"或者是"\\"
-#  outPutDir: D:\cache\temp
+  #  outPutDir: D:\cache\temp
   # 是否覆盖文件
   fileOverride: true
   # 根包位置

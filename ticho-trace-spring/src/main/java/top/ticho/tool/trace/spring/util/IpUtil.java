@@ -40,11 +40,11 @@ public class IpUtil {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
-            //HTTP_CLIENT_IP：有些代理服务器
+            // HTTP_CLIENT_IP：有些代理服务器
             ip = request.getHeader("HTTP_CLIENT_IP");
         }
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
-            //X-Real-IP：nginx服务代理
+            // X-Real-IP：nginx服务代理
             ip = request.getHeader("X-Real-IP");
         }
         if (ip == null || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
