@@ -50,4 +50,20 @@ public class MysqlDbQuery implements DbQuery {
     public String priKeyName() {
         return "PRI";
     }
+
+    @Override
+    public String defaultValue() {
+        return "Default";
+    }
+
+    @Override
+    public String nullable() {
+        return "Null";
+    }
+
+    @Override
+    public String nullableValue() {
+        return "YES";
+    }
+
 }

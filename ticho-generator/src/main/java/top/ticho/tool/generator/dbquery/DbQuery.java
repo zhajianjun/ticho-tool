@@ -71,4 +71,25 @@ public interface DbQuery {
      */
     String priKeyName();
 
+    /**
+     * 默认值
+     *
+     * @return {@link String }
+     */
+    String defaultValue();
+
+    /**
+     * 是否可为空
+     *
+     * @return {@link Boolean }
+     */
+    String nullable();
+
+    /**
+     * 是否可为空的值
+     *
+     * @return {@link Boolean }
+     */
+    String nullableValue();
+
 }

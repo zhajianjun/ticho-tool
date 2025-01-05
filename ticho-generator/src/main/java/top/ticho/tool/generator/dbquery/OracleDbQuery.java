@@ -51,4 +51,22 @@ public class OracleDbQuery implements DbQuery {
         return "KEY";
     }
 
+    @Override
+    public String defaultValue() {
+        // TODO
+        return "";
+    }
+
+    @Override
+    public String nullable() {
+        // TODO
+        return "";
+    }
+
+    @Override
+    public String nullableValue() {
+        // TODO
+        return "";
+    }
+
 }

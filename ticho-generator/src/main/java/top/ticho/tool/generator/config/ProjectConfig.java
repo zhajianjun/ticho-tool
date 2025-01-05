@@ -23,6 +23,8 @@ public class ProjectConfig {
 
     /** 是否弹出文件夹 */
     private Boolean open;
+    /** 是否文件追加模式 */
+    private Boolean fileAppend;
     /** 是否覆盖文件 */
     private Boolean fileOverride;
     /** 模板路径 */

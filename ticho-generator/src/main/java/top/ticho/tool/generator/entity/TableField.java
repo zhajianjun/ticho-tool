@@ -29,5 +29,11 @@ public class TableField {
     private Boolean priKey;
     /** 是否包含索引 */
     private String index;
+    /** 是否可为空 */
+    private Boolean nullable;
+    /** 是否可为空 */
+    private String nullableValue;
+    /** 默认值 */
+    private String defaultValue;
 
 }

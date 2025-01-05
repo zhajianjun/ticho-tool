@@ -155,6 +155,7 @@ public class ProjectHandler {
         fileTemplate.setContent(FileUtil.readString(file));
         fileTemplate.setLowerFirstFileName(Boolean.TRUE.equals(fileTemplateConfig.getLowerFirstFileName()));
         fileTemplate.setExtName(split[1]);
+        fileTemplate.setFileAppend(Boolean.TRUE.equals(projectConfig.getFileAppend()));
         setFilePath(fileTemplateConfig, fileTemplate);
         log.debug("模板文件[{}]解析完成，根路径[{}]", templateFileName, file.getAbsolutePath());
         return fileTemplate;
@@ -164,6 +165,7 @@ public class ProjectHandler {
         String relativePath = fileTemplateConfig.getRelativePath();
         String outPutDir = projectConfig.getOutPutDir();
         StringJoiner joiner = new StringJoiner(File.separator);
+        boolean fileAppend = fileTemplate.getFileAppend();
         if (StrUtil.isBlank(outPutDir)) {
             joiner.add(CommConst.PROJECT_PATH + File.separator + "data");
             joiner.add(env);
@@ -171,6 +173,14 @@ public class ProjectHandler {
             if (Boolean.TRUE.equals(fileTemplate.getAddToJavaDir())) {
                 fileTemplate.setPackagePath(projectConfig.getParentPackage() + CommConst.DOT + relativePath);
             }
+            fileTemplate.setRenderFilePath(joiner + File.separator + "%s" + fileTemplate.getSuffix() + CommConst.DOT + fileTemplate.getExtName());
+        } else if (fileAppend) {
+            joiner.add(CommConst.PROJECT_PATH + File.separator + "data");
+            joiner.add(env);
+            if (Boolean.TRUE.equals(fileTemplate.getAddToJavaDir())) {
+                fileTemplate.setPackagePath(projectConfig.getParentPackage() + CommConst.DOT + relativePath);
+            }
+            fileTemplate.setRenderFilePath(joiner + File.separator + fileTemplate.getKey() + CommConst.DOT + fileTemplate.getExtName());
         } else {
             joiner.add(outPutDir.replace("\\", File.separator));
             joiner.add("src");
@@ -187,8 +197,8 @@ public class ProjectHandler {
             }
             relativePath = relativePath.replace("/", File.separator);
             joiner.add(relativePath);
+            fileTemplate.setRenderFilePath(joiner + File.separator + "%s" + fileTemplate.getSuffix() + CommConst.DOT + fileTemplate.getExtName());
         }
-        fileTemplate.setRenderFilePath(joiner + File.separator + "%s" + fileTemplate.getSuffix() + CommConst.DOT + fileTemplate.getExtName());
     }
 
     public Connection getConnection() throws SQLException {
@@ -301,7 +311,10 @@ public class ProjectHandler {
                 String propertyLowerName = StrUtil.toCamelLF(fieldName);
                 String fieldComment = tableFieldResult.getString(dbQuery.fieldCommentKey());
                 String index = tableFieldResult.getString(dbQuery.indexKey());
+                String defaultValue = tableFieldResult.getString(dbQuery.defaultValue());
+                String nullable = tableFieldResult.getString(dbQuery.nullable());
                 boolean isPriKey = dbQuery.priKeyName().equals(index);
+                boolean isNullable = dbQuery.nullableValue().equals(nullable);
                 JavaType javaType = typeConverter.typeConvert(projectConfig.getDateType(), fieldType);
                 if (isPriKey) {
                     table.setKeyName(fieldName);
@@ -323,6 +336,9 @@ public class ProjectHandler {
                 tableField.setComment(fieldComment);
                 tableField.setIndex(index);
                 tableField.setPriKey(isPriKey);
+                tableField.setDefaultValue(defaultValue);
+                tableField.setNullable(isNullable);
+                tableField.setNullableValue(nullable);
                 // sql server中可能会重复
                 if (fieldNames.contains(fieldName)) {
                     continue;
@@ -362,8 +378,9 @@ public class ProjectHandler {
             setDefaultKeyName(table.getKeyName(), templateParams);
             for (FileTemplate fileTemplate : fileTemplates) {
                 String filePath = String.format(fileTemplate.getRenderFilePath(), table.getEntityName());
+                boolean fileAppend = fileTemplate.getFileAppend();
                 File file = new File(filePath);
-                if (file.exists() && !fileOverride) {
+                if (file.exists() && !fileOverride && !fileAppend) {
                     log.info("文件已存在，跳过生成：{}", filePath);
                     continue;
                 }
@@ -377,7 +394,7 @@ public class ProjectHandler {
                     String message = String.format("模板[%s]加载异常, %s", fileTemplate.getTemplateFileName(), validate.detailCode);
                     log.warn(message);
                 }
-                try (FileOutputStream out = new FileOutputStream(file)) {
+                try (FileOutputStream out = new FileOutputStream(file, fileAppend)) {
                     template.renderTo(out);
                     log.debug("文件生成成功[{}]", file.getAbsolutePath());
                 } catch (Exception e) {

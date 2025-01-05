@@ -24,10 +24,11 @@ public class FileTemplate {
     private String extName;
     /** 模板内容 */
     private String content;
-
     /** 渲染文件路径 */
     private String renderFilePath;
     /** 文件首字母是否小写 */
     private Boolean lowerFirstFileName;
+    /** 是否文件追加模式 */
+    private Boolean fileAppend;
 
 }

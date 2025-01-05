@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class FileTemplateConfig {
 
-
     /** 相对路径 */
     private String relativePath;
     /** 文件名后缀 */
